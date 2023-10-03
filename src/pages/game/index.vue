@@ -153,7 +153,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.setPlayerFocus();
+    this.rollDice();
   },
 
   data() {
@@ -162,22 +162,21 @@ export default defineComponent({
       doors,
       showMarkers: false,
       lastDirection: 'up',
-      dice: 6,
+      dice: 0,
     };
   },
 
-  watch: {
-    'sessionStore.activePlayer.name': {
-      handler: function () {
-        this.checkNpc();
-      },
-      deep: true,
-      immediate: true,
+  computed: {
+    isNpc() {
+      return (
+        this.sessionStore.activePlayer.name !==
+        this.sessionStore.playerSelected.name
+      );
     },
   },
 
   methods: {
-    padMovePlayer(direction: string) {
+    padMovePlayer(direction: string): boolean | undefined {
       let player: any = document.querySelector(
         `#${this.sessionStore.activePlayer.name}`
       );
@@ -189,7 +188,7 @@ export default defineComponent({
       if (direction === 'up') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition - 24;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return;
+          return false;
 
         player.classList.add('player-moving');
         player.style.top = top - 50 + 'px';
@@ -204,7 +203,7 @@ export default defineComponent({
       } else if (direction === 'right') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition + 1;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return;
+          return false;
 
         player.classList.add('player-moving');
         player.style.left = left + 50 + 'px';
@@ -219,7 +218,7 @@ export default defineComponent({
       } else if (direction === 'down') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition + 24;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return;
+          return false;
 
         player.classList.add('player-moving');
         player.style.top = top + 50 + 'px';
@@ -234,7 +233,7 @@ export default defineComponent({
       } else if (direction === 'left') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition - 1;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return;
+          return false;
 
         player.classList.add('player-moving');
         player.style.left = left - 50 + 'px';
@@ -249,12 +248,18 @@ export default defineComponent({
       }
 
       this.lastDirection = direction;
+      return true;
     },
 
     setPlayerPosition(player: any, nextFloor: number) {
       player.classList.remove('player-moving');
       this.sessionStore.activePlayer.playerPosition = nextFloor;
       this.dice--;
+      if (this.dice && this.isNpc) {
+        setTimeout(() => {
+          this.checkNpc();
+        }, 1000);
+      }
 
       const place = this.doors.find(
         (d) => d.door == this.sessionStore.activePlayer.playerPosition
@@ -263,7 +268,6 @@ export default defineComponent({
         this.enterPlace(place);
       } else if (!this.dice) {
         this.sessionStore.changeActivePlayer();
-        this.setPlayerFocus();
         this.rollDice();
       }
     },
@@ -275,23 +279,26 @@ export default defineComponent({
 
     rollDice() {
       this.dice = 6;
+      this.setPlayerFocus();
+      if (this.isNpc) {
+        setTimeout(() => {
+          this.checkNpc();
+        }, 1000);
+      }
     },
 
     checkNpc() {
-      if (
-        this.sessionStore.activePlayer.name ==
-        this.sessionStore.playerSelected.name
-      )
-        return;
+      if (!this.isNpc || this.$route.name !== 'game' || !this.dice) return;
 
       const directions = ['up', 'right', 'left', 'down'];
-      this.padMovePlayer(
-        directions[Math.floor(Math.random() * directions.length)]
-      );
+      const direction =
+        directions[Math.floor(Math.random() * directions.length)];
 
-      setTimeout(() => {
+      const npcMove = this.padMovePlayer(direction);
+
+      if (npcMove === false) {
         this.checkNpc();
-      }, 1000);
+      }
     },
 
     setPlayerFocus(index?: string) {
