@@ -1,4 +1,6 @@
 // app global css in SCSS form
+@import "./clue.scss";
+
 html {
   scroll-behavior: smooth;
 }

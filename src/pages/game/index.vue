@@ -12,7 +12,15 @@
           {{ index }}
         </span>
 
-        <div v-if="playerPosition === index" class="player">
+        <template v-for="(player, j) in sessionStore.players" :key="j">
+          <Player
+            :playerName="player.name"
+            :floor="index"
+            :playerPosition="player.playerPosition"
+          />
+        </template>
+
+        <!-- <div v-if="playerPosition === index" class="player">
           <div
             class="shadow-10"
             style="
@@ -22,7 +30,7 @@
               border: 1px solid #ccc;
             "
           ></div>
-        </div>
+        </div> -->
       </div>
 
       <div class="places">
@@ -58,7 +66,13 @@
         </div>
       </div>
 
-      <div class="control-pad">
+      <div
+        class="control-pad"
+        :class="{
+          'control-pad-disabled':
+            sessionStore.activePlayer.name !== sessionStore.playerSelected.name,
+        }"
+      >
         <div class="row full-width">
           <div
             v-ripple
@@ -119,9 +133,24 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { walls, doors } from './obstacles';
+import { useSessionStore } from 'stores/session';
+
+import Player from 'components/Player.vue';
 
 export default defineComponent({
   name: 'GamePage',
+
+  setup() {
+    const sessionStore = useSessionStore();
+
+    return {
+      sessionStore,
+    };
+  },
+
+  components: {
+    Player,
+  },
 
   mounted() {
     this.setPlayerFocus();
@@ -132,21 +161,33 @@ export default defineComponent({
       walls,
       doors,
       showMarkers: false,
-      playerPosition: 120,
       lastDirection: 'up',
+      dice: 6,
     };
+  },
+
+  watch: {
+    'sessionStore.activePlayer.name': {
+      handler: function () {
+        this.checkNpc();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
 
   methods: {
     padMovePlayer(direction: string) {
-      let player: any = document.querySelector('.player');
-      if (!player) return;
+      let player: any = document.querySelector(
+        `#${this.sessionStore.activePlayer.name}`
+      );
+      if (!player || player.classList.contains('player-moving')) return;
 
       const top = parseInt(getComputedStyle(player).top.replace('px', ''));
       const left = parseInt(getComputedStyle(player).left.replace('px', ''));
 
       if (direction === 'up') {
-        const nextFloor = this.playerPosition - 24;
+        const nextFloor = this.sessionStore.activePlayer.playerPosition - 24;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
           return;
 
@@ -158,16 +199,10 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          player.classList.remove('player-moving');
-          this.playerPosition = nextFloor;
-
-          const place = this.doors.find((d) => d.door == this.playerPosition);
-          if (place) {
-            alert(`Entrou no ${place.place}`);
-          }
+          this.setPlayerPosition(player, nextFloor);
         }, 300);
       } else if (direction === 'right') {
-        const nextFloor = this.playerPosition + 1;
+        const nextFloor = this.sessionStore.activePlayer.playerPosition + 1;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
           return;
 
@@ -179,16 +214,10 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          player.classList.remove('player-moving');
-          this.playerPosition = nextFloor;
-
-          const place = this.doors.find((d) => d.door == this.playerPosition);
-          if (place) {
-            alert(`Entrou no ${place.place}`);
-          }
+          this.setPlayerPosition(player, nextFloor);
         }, 300);
       } else if (direction === 'down') {
-        const nextFloor = this.playerPosition + 24;
+        const nextFloor = this.sessionStore.activePlayer.playerPosition + 24;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
           return;
 
@@ -200,16 +229,10 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          player.classList.remove('player-moving');
-          this.playerPosition = nextFloor;
-
-          const place = this.doors.find((d) => d.door == this.playerPosition);
-          if (place) {
-            alert(`Entrou no ${place.place}`);
-          }
+          this.setPlayerPosition(player, nextFloor);
         }, 300);
       } else if (direction === 'left') {
-        const nextFloor = this.playerPosition - 1;
+        const nextFloor = this.sessionStore.activePlayer.playerPosition - 1;
         if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
           return;
 
@@ -221,29 +244,66 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          player.classList.remove('player-moving');
-          this.playerPosition = nextFloor;
-
-          const place = this.doors.find((d) => d.door == this.playerPosition);
-          if (place) {
-            alert(`Entrou no ${place.place}`);
-          }
+          this.setPlayerPosition(player, nextFloor);
         }, 300);
       }
 
       this.lastDirection = direction;
     },
 
+    setPlayerPosition(player: any, nextFloor: number) {
+      player.classList.remove('player-moving');
+      this.sessionStore.activePlayer.playerPosition = nextFloor;
+      this.dice--;
+
+      const place = this.doors.find(
+        (d) => d.door == this.sessionStore.activePlayer.playerPosition
+      );
+      if (place) {
+        this.enterPlace(place);
+      } else if (!this.dice) {
+        this.sessionStore.changeActivePlayer();
+        this.setPlayerFocus();
+        this.rollDice();
+      }
+    },
+
+    enterPlace(place: any) {
+      this.dice = 0;
+      alert(`Entrou no ${place.place}`);
+    },
+
+    rollDice() {
+      this.dice = 6;
+    },
+
+    checkNpc() {
+      if (
+        this.sessionStore.activePlayer.name ==
+        this.sessionStore.playerSelected.name
+      )
+        return;
+
+      const directions = ['up', 'right', 'left', 'down'];
+      this.padMovePlayer(
+        directions[Math.floor(Math.random() * directions.length)]
+      );
+
+      setTimeout(() => {
+        this.checkNpc();
+      }, 1000);
+    },
+
     setPlayerFocus(index?: string) {
       setTimeout(() => {
-        let player: any = document.querySelector('.player');
+        let player: any = document.querySelector(
+          `#${this.sessionStore.activePlayer.name}`
+        );
         if (!player) return;
 
         const rect = player.getBoundingClientRect();
         const width = this.$q.screen.width;
         const height = this.$q.screen.height;
-        console.log('rect', rect);
-        console.log(rect.x - width / 2, rect.y - height / 2);
 
         if (index === 'x') {
           window.scrollBy(rect.x - width / 2, 0);
@@ -309,24 +369,6 @@ export default defineComponent({
   border-right: 1px solid #fff;
   border-bottom: 1px solid #121212;
   border-top: 1px solid #fff;
-}
-
-.player {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #121212;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.3s;
-  z-index: 1;
-}
-.player-moving {
-  transform: scale(105%) translate(-50%, -50%);
-  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2),
-    0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
 
 .places {
@@ -436,6 +478,11 @@ export default defineComponent({
   border-radius: 50%;
   transform: rotate(45deg);
   z-index: 1;
+}
+.control-pad-disabled {
+  opacity: 0;
+  pointer-events: none;
+  touch-action: none;
 }
 </style>
 
