@@ -139,7 +139,13 @@ export default defineComponent({
 
   mounted() {
     if (this.isNpc) {
-      this.rollDice();
+      setTimeout(() => {
+        this.rollDice();
+      }, 1000);
+    } else {
+      setTimeout(() => {
+        this.rollDiceBtnDialog = true;
+      }, 1000);
     }
   },
 
