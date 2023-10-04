@@ -1,8 +1,13 @@
 :root {
   --plum-color: #121212;
-  --scarlett-color: #CE301E;
+  --scarlett-color: #ce301e;
   --white-color: #fff;
-  --mustard-color: #FF5A00;
+  --mustard-color: #ff5a00;
   --green-color: #009688;
-  --peacock-color: #B300B3;
+  --peacock-color: #b300b3;
+  --clue-dark: #1d1d1d;
+}
+
+.clue-text-shadow {
+  filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 1));
 }

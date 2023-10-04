@@ -9,76 +9,94 @@ export const walls: number[] = [
 
 interface IDoor {
   door: number;
+  entry: number;
   place: string;
 }
 
 export const doors: IDoor[] = [
   {
     door: 78,
+    entry: 102,
     place: 'study'
   },
   {
     door: 105,
+    entry: 104,
     place: 'hall'
   },
   {
     door: 155,
+    entry: 179,
     place: 'hall'
   },
   {
     door: 156,
+    entry: 180,
     place: 'hall'
   },
   {
     door: 137,
+    entry: 161,
     place: 'louge'
   },
   {
     door: 233,
+    entry: 209,
     place: 'dinning'
   },
   {
     door: 304,
+    entry: 303,
     place: 'dinning'
   },
   {
     door: 451,
+    entry: 427,
     place: 'kitchen'
   },
   {
     door: 471,
+    entry: 472,
     place: 'ballroom'
   },
   {
     door: 422,
+    entry: 398,
     place: 'ballroom'
   },
   {
     door: 417,
+    entry: 393,
     place: 'ballroom'
   },
   {
     door: 464,
+    entry: 463,
     place: 'ballroom'
   },
   {
     door: 460,
+    entry: 461,
     place: 'conservatory'
   },
   {
     door: 365,
+    entry: 366,
     place: 'billiard'
   },
   {
     door: 289,
+    entry: 265,
     place: 'billiard'
   },
   {
     door: 198,
+    entry: 199,
     place: 'library'
   },
   {
     door: 243,
+    entry: 267,
     place: 'library'
   },
 ];

@@ -19,18 +19,6 @@
             :playerPosition="player.playerPosition"
           />
         </template>
-
-        <!-- <div v-if="playerPosition === index" class="player">
-          <div
-            class="shadow-10"
-            style="
-              width: 20px;
-              height: 20px;
-              border-radius: 50%;
-              border: 1px solid #ccc;
-            "
-          ></div>
-        </div> -->
       </div>
 
       <div class="places">
@@ -66,68 +54,63 @@
         </div>
       </div>
 
-      <div
-        class="control-pad"
-        :class="{
-          'control-pad-disabled':
-            sessionStore.activePlayer.name !== sessionStore.playerSelected.name,
-        }"
-      >
-        <div class="row full-width">
-          <div
-            v-ripple
-            class="col relative-position"
-            id="up"
-            style="
-              height: 110px;
-              width: 110px;
-              border: 2px solid var(--q-secondary);
-              border-left: none;
-            "
-            @click="padMovePlayer('up')"
-          ></div>
-          <div
-            v-ripple
-            class="col relative-position"
-            id="right"
-            style="
-              height: 110px;
-              width: 110px;
-              border: 2px solid var(--q-secondary);
-              border-right: none;
-            "
-            @click="padMovePlayer('right')"
-          ></div>
-        </div>
-        <div class="row full-width" style="width: 110px">
-          <div
-            v-ripple
-            class="col relative-position"
-            id="left"
-            style="
-              height: 110px;
-              width: 110px;
-              border: 2px solid var(--q-secondary);
-              border-left: none;
-            "
-            @click="padMovePlayer('left')"
-          ></div>
-          <div
-            v-ripple
-            class="col relative-position"
-            id="down"
-            style="
-              height: 110px;
-              width: 110px;
-              border: 2px solid var(--q-secondary);
-              border-right: none;
-            "
-            @click="padMovePlayer('down')"
-          ></div>
+      <div class="controls">
+        <div v-if="isPlayer && sessionStore.diceValue" class="control-pad">
+          <div class="row full-width">
+            <div
+              v-ripple
+              class="col pad"
+              id="up"
+              style="border-left: none; margin: 4px; margin-left: 0"
+              @click="padMovePlayer('up')"
+            ></div>
+            <div
+              v-ripple
+              class="col pad"
+              id="right"
+              style="border-right: none; margin: 4px; margin-right: 0"
+              @click="padMovePlayer('right')"
+            ></div>
+          </div>
+          <div class="row full-width" style="width: 110px">
+            <div
+              v-ripple
+              class="col pad"
+              id="left"
+              style="border-left: none; margin: 4px; margin-left: 0"
+              @click="padMovePlayer('left')"
+            ></div>
+            <div
+              v-ripple
+              class="col pad"
+              id="down"
+              style="border-right: none; margin: 4px; margin-right: 0"
+              @click="padMovePlayer('down')"
+            ></div>
+          </div>
         </div>
       </div>
+
+      <q-dialog v-model="rollDiceBtnDialog">
+        <div class="d-flex column flex-center transparent">
+          <div class="text-white text-h4 clue-text-shadow">Role os Dados</div>
+          <q-avatar
+            @click="rollDice"
+            size="200px"
+            class="cursor-pointer relative-position"
+            v-ripple
+          >
+            <q-img
+              class="clue-text-shadow"
+              src="/src/assets/img/dices.png"
+            ></q-img>
+          </q-avatar>
+        </div>
+      </q-dialog>
     </div>
   </div>
+
+  <DiceDialog />
 </template>
 
 <script lang="ts">
@@ -136,6 +119,7 @@ import { walls, doors } from './obstacles';
 import { useSessionStore } from 'stores/session';
 
 import Player from 'components/Player.vue';
+import DiceDialog from 'components/DiceDialog.vue';
 
 export default defineComponent({
   name: 'GamePage',
@@ -150,10 +134,13 @@ export default defineComponent({
 
   components: {
     Player,
+    DiceDialog,
   },
 
   mounted() {
-    this.rollDice();
+    if (this.isNpc) {
+      this.rollDice();
+    }
   },
 
   data() {
@@ -162,16 +149,49 @@ export default defineComponent({
       doors,
       showMarkers: false,
       lastDirection: 'up',
-      dice: 0,
+      rollDiceBtnDialog: false,
     };
   },
 
+  watch: {
+    'sessionStore.rollDice': function (novo) {
+      if (!novo) {
+        this.setPlayerFocus();
+        if (this.isNpc) {
+          setTimeout(() => {
+            this.checkNpc();
+          }, 1000);
+        }
+      }
+    },
+  },
+
   computed: {
+    isPlayer() {
+      return (
+        this.sessionStore.activePlayer.name ===
+        this.sessionStore.playerSelected.name
+      );
+    },
+
     isNpc() {
       return (
         this.sessionStore.activePlayer.name !==
         this.sessionStore.playerSelected.name
       );
+    },
+
+    rollDiceBtnDialogComputed: {
+      get() {
+        return (
+          this.isPlayer &&
+          !this.sessionStore.diceValue &&
+          !this.sessionStore.rollDice
+        );
+      },
+      set() {
+        this.rollDice();
+      },
     },
   },
 
@@ -187,8 +207,7 @@ export default defineComponent({
 
       if (direction === 'up') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition - 24;
-        if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return false;
+        if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
         player.style.top = top - 50 + 'px';
@@ -202,8 +221,7 @@ export default defineComponent({
         }, 300);
       } else if (direction === 'right') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition + 1;
-        if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return false;
+        if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
         player.style.left = left + 50 + 'px';
@@ -217,8 +235,7 @@ export default defineComponent({
         }, 300);
       } else if (direction === 'down') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition + 24;
-        if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return false;
+        if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
         player.style.top = top + 50 + 'px';
@@ -232,8 +249,7 @@ export default defineComponent({
         }, 300);
       } else if (direction === 'left') {
         const nextFloor = this.sessionStore.activePlayer.playerPosition - 1;
-        if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor))
-          return false;
+        if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
         player.style.left = left - 50 + 'px';
@@ -251,11 +267,29 @@ export default defineComponent({
       return true;
     },
 
+    checkObstacle(nextFloor: number): boolean {
+      const place = this.doors.find((d) => d.door == nextFloor);
+
+      if (
+        place &&
+        this.sessionStore.activePlayer.playerPosition !== place.entry
+      ) {
+        return false;
+      } else if (
+        nextFloor < 0 ||
+        nextFloor > 600 ||
+        this.walls.includes(nextFloor)
+      ) {
+        return false;
+      }
+      return true;
+    },
+
     setPlayerPosition(player: any, nextFloor: number) {
       player.classList.remove('player-moving');
       this.sessionStore.activePlayer.playerPosition = nextFloor;
-      this.dice--;
-      if (this.dice && this.isNpc) {
+      this.sessionStore.diceValue--;
+      if (this.sessionStore.diceValue && this.isNpc) {
         setTimeout(() => {
           this.checkNpc();
         }, 1000);
@@ -266,29 +300,38 @@ export default defineComponent({
       );
       if (place) {
         this.enterPlace(place);
-      } else if (!this.dice) {
+      } else if (!this.sessionStore.diceValue) {
         this.sessionStore.changeActivePlayer();
-        this.rollDice();
+        this.setPlayerFocus();
+        if (this.isNpc) {
+          setTimeout(() => {
+            this.rollDice();
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            this.rollDiceBtnDialog = true;
+          }, 1000);
+        }
       }
     },
 
     enterPlace(place: any) {
-      this.dice = 0;
+      this.sessionStore.diceValue = 0;
       alert(`Entrou no ${place.place}`);
     },
 
     rollDice() {
-      this.dice = 6;
-      this.setPlayerFocus();
-      if (this.isNpc) {
-        setTimeout(() => {
-          this.checkNpc();
-        }, 1000);
-      }
+      this.rollDiceBtnDialog = false;
+      this.sessionStore.rollDice = true;
     },
 
     checkNpc() {
-      if (!this.isNpc || this.$route.name !== 'game' || !this.dice) return;
+      if (
+        !this.isNpc ||
+        this.$route.name !== 'game' ||
+        !this.sessionStore.diceValue
+      )
+        return;
 
       const directions = ['up', 'right', 'left', 'down'];
       const direction =
@@ -471,25 +514,30 @@ export default defineComponent({
   height: 350px;
 }
 
-.control-pad {
+.controls {
   position: fixed;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   bottom: 5%;
   right: 5%;
   width: 200px;
   height: 200px;
-  background: rgba(0, 0, 0, 0.2) !important;
-  border: 3px solid var(--q-secondary);
+}
+.control-pad {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  height: 200px;
+  border: 3px solid var(--q-primary);
   border-radius: 50%;
   transform: rotate(45deg);
   z-index: 1;
 }
-.control-pad-disabled {
-  opacity: 0;
-  pointer-events: none;
-  touch-action: none;
+.pad {
+  position: relative;
+  height: 110px;
+  width: 110px;
+  background: rgba(0, 0, 0, 0.2) !important;
+  cursor: pointer;
 }
 </style>
 

@@ -21,6 +21,8 @@ export const useSessionStore = defineStore('session', {
       playerPosition: 590
     },
     activeIndex: 0,
+    rollDice: false,
+    diceValue: 0,
   }),
 
   getters: {

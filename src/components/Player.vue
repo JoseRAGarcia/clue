@@ -1,5 +1,5 @@
 <template>
-  <div
+  <q-avatar
     v-if="floor === playerPosition"
     class="player"
     :id="playerName"
@@ -14,14 +14,40 @@
         border: 1px solid #ccc;
       "
     ></div>
-  </div>
+    <q-badge
+      v-if="
+        sessionStore.activePlayer.name === playerName && sessionStore.diceValue
+      "
+      floating
+      color="positive"
+      class="transparent"
+      style="right: -15px; top: -15px"
+    >
+      <div
+        class="steps-left clue-text-shadow"
+        :style="`color: var(--${playerName}-color)`"
+      >
+        {{ sessionStore.diceValue }}
+      </div>
+    </q-badge>
+  </q-avatar>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useSessionStore } from 'stores/session';
 
 export default defineComponent({
   name: 'PlayerComponent',
+
+  setup() {
+    const sessionStore = useSessionStore();
+
+    return {
+      sessionStore,
+    };
+  },
+
   props: {
     playerName: {
       type: String,
@@ -55,5 +81,15 @@ export default defineComponent({
   transform: scale(105%) translate(-50%, -50%);
   box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2),
     0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
+}
+
+.steps-left {
+  position: absolute;
+  font-size: 3rem;
+  font-weight: 600;
+  z-index: 1;
+  pointer-events: none;
+  touch-action: none;
+  opacity: 0.8;
 }
 </style>
