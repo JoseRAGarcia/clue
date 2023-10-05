@@ -102,7 +102,7 @@
           >
             <q-img
               class="clue-text-shadow"
-              src="/src/assets/img/dices.png"
+              src="src/assets/img/dices.png"
             ></q-img>
           </q-avatar>
         </div>

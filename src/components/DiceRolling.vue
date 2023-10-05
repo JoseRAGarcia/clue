@@ -130,9 +130,9 @@ export default defineComponent({
         }
       }
 
-      setTimeout(() => {
-        this.sessionStore.rollDice = false;
-      }, 1000);
+      // setTimeout(() => {
+      //   this.sessionStore.rollDice = false;
+      // }, 1000);
     },
   },
 });

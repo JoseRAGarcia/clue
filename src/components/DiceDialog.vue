@@ -4,8 +4,9 @@
     transition-show="scale"
     transition-hide="scale"
     persistent
+    full-width
   >
-    <DiceRolling />
+    <Dice />
   </q-dialog>
 </template>
 
@@ -13,7 +14,7 @@
 import { defineComponent } from 'vue';
 import { useSessionStore } from 'stores/session';
 
-import DiceRolling from 'components/DiceRolling.vue';
+import Dice from 'components/Dice.vue';
 
 export default defineComponent({
   name: 'DiceDialogComponent',
@@ -27,7 +28,7 @@ export default defineComponent({
   },
 
   components: {
-    DiceRolling,
+    Dice,
   },
 });
 </script>
