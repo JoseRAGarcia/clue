@@ -16,7 +16,9 @@
     ></div>
     <q-badge
       v-if="
-        sessionStore.activePlayer.name === playerName && sessionStore.diceValue
+        sessionStore.activePlayer.name === playerName &&
+        sessionStore.diceValue &&
+        !sessionStore.rollDice
       "
       floating
       color="positive"

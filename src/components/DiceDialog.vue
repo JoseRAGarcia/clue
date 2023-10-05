@@ -6,15 +6,13 @@
     persistent
     full-width
   >
-    <Dice />
+    <component :is="Dice" />
   </q-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { useSessionStore } from 'stores/session';
-
-import Dice from 'components/Dice.vue';
 
 export default defineComponent({
   name: 'DiceDialogComponent',
@@ -22,13 +20,12 @@ export default defineComponent({
   setup() {
     const sessionStore = useSessionStore();
 
+    const Dice = defineAsyncComponent(() => import('components/Dice.vue'));
+
     return {
       sessionStore,
+      Dice,
     };
-  },
-
-  components: {
-    Dice,
   },
 });
 </script>

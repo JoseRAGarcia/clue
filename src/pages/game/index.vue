@@ -91,7 +91,13 @@
         </div>
       </div>
 
-      <q-dialog v-model="rollDiceBtnDialog">
+      <q-dialog
+        v-model="rollDiceBtnDialog"
+        transition-show="scale"
+        transition-hide="scale"
+        persistent
+        full-width
+      >
         <div class="d-flex column flex-center transparent">
           <div class="text-white text-h4 clue-text-shadow">Role os Dados</div>
           <q-avatar
@@ -523,6 +529,7 @@ export default defineComponent({
   right: 5%;
   width: 200px;
   height: 200px;
+  z-index: 1;
 }
 .control-pad {
   overflow: hidden;
@@ -533,7 +540,6 @@ export default defineComponent({
   border: 3px solid var(--q-primary);
   border-radius: 50%;
   transform: rotate(45deg);
-  z-index: 1;
 }
 .pad {
   position: relative;

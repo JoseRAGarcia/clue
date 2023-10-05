@@ -3,16 +3,16 @@
   each _, i in Array(36)
     input.setA(class='rollA' + (i + 1), type='radio', name='die', id='rollA' + (i + 1))
     input.setB(class='rollB' + (i + 1), type='radio', name='die', id='rollB' + (i + 1))
-  //- .rollBtn
-  //-   .rollBtn-inner
-  //-     .rollBtn-blocker
-  //-     .labels-set.labels-setA
-  //-       each _, i in Array(36)
-  //-         label(for='rollA' + (i + 1))
-  //-     .labels-set.labels-setB
-  //-       each _, i in Array(36)
-  //-         label(for='rollB' + (i + 1))
-  //-     .rollBtn-text Roll the Dice
+  .rollBtn
+    .rollBtn-inner
+      .rollBtn-blocker
+      .labels-set.labels-setA
+        each _, i in Array(36)
+          label(for='rollA' + (i + 1))
+      .labels-set.labels-setB
+        each _, i in Array(36)
+          label(for='rollB' + (i + 1))
+      .rollBtn-text Roll the Dice
   .result
     .result-bg-wrapper.result-bg-wrapperA
       .result-bg.result-bgA
@@ -63,7 +63,7 @@ import { defineComponent } from 'vue';
 import { useSessionStore } from 'stores/session';
 
 export default defineComponent({
-  name: 'DiceRollingComponent',
+  name: 'DicePugComponent',
 
   setup() {
     const sessionStore = useSessionStore();
@@ -82,21 +82,21 @@ export default defineComponent({
   methods: {
     roll() {
       setTimeout(() => {
-        const randomNum = Math.floor(Math.random() * 36) + 1;
-        const randomElA = document.querySelector(
-          `.rollA${randomNum}`
-        ) as HTMLElement;
-        const randomElB = document.querySelector(
-          `.rollB${randomNum}`
-        ) as HTMLElement;
+        // const randomNum = Math.floor(Math.random() * 36) + 1;
+        // const randomElA = document.querySelector(
+        //   `.rollA${randomNum}`
+        // ) as HTMLElement;
+        // const randomElB = document.querySelector(
+        //   `.rollB${randomNum}`
+        // ) as HTMLElement;
 
-        if (randomElA) {
-          randomElA.click();
-        } else if (randomElB) {
-          randomElB.click();
-        } else {
-          console.log('not found');
-        }
+        // if (randomElA) {
+        //   randomElA.click();
+        // } else if (randomElB) {
+        //   randomElB.click();
+        // } else {
+        //   console.log('not found');
+        // }
 
         setTimeout(() => {
           this.getResult();
@@ -130,9 +130,9 @@ export default defineComponent({
         }
       }
 
-      // setTimeout(() => {
-      //   this.sessionStore.rollDice = false;
-      // }, 1000);
+      setTimeout(() => {
+        // this.sessionStore.rollDice = false;
+      }, 1000);
     },
   },
 });
