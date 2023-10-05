@@ -102,7 +102,7 @@
           >
             <q-img
               class="clue-text-shadow"
-              src="src/assets/img/dices.png"
+              src="../../assets/img/dices.png"
             ></q-img>
           </q-avatar>
         </div>
@@ -387,7 +387,7 @@ export default defineComponent({
     background-position-x: -73px;
     background-position-y: -68px;
    */
-  background: url(/src/assets/img/boards/board_1.jpg) no-repeat;
+  background: url(./src/assets/img/boards/board_1.jpg) no-repeat;
   background-size: 1343px 1394px;
   background-position: center;
   background-position-x: -73px;

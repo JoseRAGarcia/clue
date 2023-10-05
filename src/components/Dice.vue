@@ -3,7 +3,7 @@
     v-if="sessionStore.rollDice"
     data-v-669c1b9e=""
     class="container"
-    :style="`background: url(/src/assets/img/cards/${sessionStore.activePlayer.name}.jpg) no-repeat;
+    :style="`background: url(./src/assets/img/cards/${sessionStore.activePlayer.name}.jpg) no-repeat;
   background-position: center;`"
   >
     <input
