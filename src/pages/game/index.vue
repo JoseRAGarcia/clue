@@ -118,11 +118,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { walls, doors } from './obstacles';
+import { matrix, walls, doors } from './obstacles';
 import { useSessionStore } from 'stores/session';
 
 import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
+
+interface ICoord {
+  row: number;
+  col: number;
+}
 
 export default defineComponent({
   name: 'GamePage',
@@ -159,6 +164,8 @@ export default defineComponent({
       showMarkers: false,
       lastDirection: 'up',
       rollDiceBtnDialog: false,
+      nextDoor: 0,
+      lastPosition: 0,
     };
   },
 
@@ -310,23 +317,28 @@ export default defineComponent({
       if (place) {
         this.enterPlace(place);
       } else if (!this.sessionStore.diceValue) {
-        this.sessionStore.changeActivePlayer();
-        this.setPlayerFocus();
-        if (this.isNpc) {
-          setTimeout(() => {
-            this.rollDice();
-          }, 1000);
-        } else {
-          setTimeout(() => {
-            this.rollDiceBtnDialog = true;
-          }, 1000);
-        }
+        this.setNextPlayer();
       }
     },
 
     enterPlace(place: any) {
       this.sessionStore.diceValue = 0;
       alert(`Entrou no ${place.place}`);
+      this.setNextPlayer();
+    },
+
+    setNextPlayer() {
+      this.sessionStore.changeActivePlayer();
+      this.setPlayerFocus();
+      if (this.isNpc) {
+        setTimeout(() => {
+          this.rollDice();
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          this.rollDiceBtnDialog = true;
+        }, 1000);
+      }
     },
 
     rollDice() {
@@ -339,18 +351,115 @@ export default defineComponent({
         !this.isNpc ||
         this.$route.name !== 'game' ||
         !this.sessionStore.diceValue
-      )
+      ) {
+        this.lastPosition = 0;
         return;
+      }
 
-      const directions = ['up', 'right', 'left', 'down'];
-      const direction =
-        directions[Math.floor(Math.random() * directions.length)];
+      const playerPosition = this.sessionStore.activePlayer.playerPosition;
 
-      const npcMove = this.padMovePlayer(direction);
+      let upPosition = this.sessionStore.activePlayer.playerPosition - 24;
+      let rightPosition = this.sessionStore.activePlayer.playerPosition + 1;
+      let downPosition = this.sessionStore.activePlayer.playerPosition + 24;
+      let leftPosition = this.sessionStore.activePlayer.playerPosition - 1;
+
+      function d(position, door) {
+        return Math.sqrt(
+          (door.col - position.col) * (door.col - position.col) +
+            (door.row - position.row) * (door.row - position.row)
+        );
+      }
+
+      const coordDoors = this.doors.map((door) => ({
+        ...this.getCoord(door.door),
+        ...door,
+        distance: d(this.getCoord(playerPosition), this.getCoord(door.door)),
+      }));
+
+      let destination: any = null;
+
+      coordDoors.forEach((door) => {
+        if (!destination || door.distance < destination.distance) {
+          destination = door;
+        }
+      });
+
+      const coordDirections = [
+        {
+          movement: 'up',
+          position: upPosition,
+          ...this.getCoord(upPosition),
+          distance: d(
+            this.getCoord(upPosition),
+            this.getCoord(destination.door)
+          ),
+        },
+        {
+          movement: 'right',
+          position: rightPosition,
+          ...this.getCoord(rightPosition),
+          distance: d(
+            this.getCoord(rightPosition),
+            this.getCoord(destination.door)
+          ),
+        },
+        {
+          movement: 'down',
+          position: downPosition,
+          ...this.getCoord(downPosition),
+          distance: d(
+            this.getCoord(downPosition),
+            this.getCoord(destination.door)
+          ),
+        },
+        {
+          movement: 'left',
+          position: leftPosition,
+          ...this.getCoord(leftPosition),
+          distance: d(
+            this.getCoord(leftPosition),
+            this.getCoord(destination.door)
+          ),
+        },
+      ];
+
+      let direction: any = null;
+
+      coordDirections.forEach((dir) => {
+        if (
+          this.checkObstacle(dir.position) &&
+          dir.position !== this.lastPosition
+        ) {
+          if (!direction || dir.distance < direction.distance) {
+            direction = dir;
+          }
+        }
+      });
+
+      this.lastPosition = playerPosition;
+
+      const npcMove = this.padMovePlayer(direction.movement);
 
       if (npcMove === false) {
         this.checkNpc();
       }
+    },
+
+    getCoord(position: number) {
+      const tableMatrix = matrix();
+
+      let coordRow, coorCol;
+
+      tableMatrix.forEach((row) => {
+        row.forEach((col) => {
+          if (col == position) {
+            coordRow = tableMatrix.indexOf(row);
+            coorCol = row.indexOf(col);
+          }
+        });
+      });
+
+      return { col: coorCol, row: coordRow };
     },
 
     setPlayerFocus(index?: string) {
