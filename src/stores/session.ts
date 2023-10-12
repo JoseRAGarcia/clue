@@ -3,10 +3,20 @@ import { defineStore } from 'pinia';
 interface IPlayer {
   name: string;
   playerPosition: number;
+  isNpc: boolean;
+  isActive: boolean;
+}
+
+interface IGame {
+  players: IPlayer[];
 }
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
+    game: {
+      players: [],
+    },
+
     players: [
       { name: 'plum', playerPosition: 120 },
       { name: 'scarlett', playerPosition: 16 },
@@ -14,7 +24,6 @@ export const useSessionStore = defineStore('session', {
       { name: 'white', playerPosition: 590 },
       { name: 'green', playerPosition: 585 },
       { name: 'peacock', playerPosition: 432 },
-
     ],
     playerSelected: {
       name: 'white',

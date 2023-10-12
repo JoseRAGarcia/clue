@@ -323,7 +323,7 @@ export default defineComponent({
 
     enterPlace(place: any) {
       this.sessionStore.diceValue = 0;
-      alert(`Entrou no ${place.place}`);
+      console.log(`Entrou no ${place.place}`);
       this.setNextPlayer();
     },
 
@@ -363,7 +363,7 @@ export default defineComponent({
       let downPosition = this.sessionStore.activePlayer.playerPosition + 24;
       let leftPosition = this.sessionStore.activePlayer.playerPosition - 1;
 
-      function d(position, door) {
+      function d(position: any, door: any) {
         return Math.sqrt(
           (door.col - position.col) * (door.col - position.col) +
             (door.row - position.row) * (door.row - position.row)
@@ -425,16 +425,29 @@ export default defineComponent({
 
       let direction: any = null;
 
-      coordDirections.forEach((dir) => {
-        if (
-          this.checkObstacle(dir.position) &&
-          dir.position !== this.lastPosition
-        ) {
-          if (!direction || dir.distance < direction.distance) {
-            direction = dir;
+      console.log('coordDoors', coordDoors);
+      console.log('coordDirections', coordDirections);
+
+      const isInsidePlace = coordDoors.find(
+        (door) => door.door === playerPosition
+      );
+      if (isInsidePlace) {
+        const nextStep = coordDirections.find(
+          (dir) => dir.position === isInsidePlace.entry
+        );
+        direction = nextStep;
+      } else {
+        coordDirections.forEach((dir) => {
+          if (
+            this.checkObstacle(dir.position) &&
+            dir.position !== this.lastPosition
+          ) {
+            if (!direction || dir.distance < direction.distance) {
+              direction = dir;
+            }
           }
-        }
-      });
+        });
+      }
 
       this.lastPosition = playerPosition;
 
