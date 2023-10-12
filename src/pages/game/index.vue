@@ -12,7 +12,7 @@
           {{ index }}
         </span>
 
-        <template v-for="(player, j) in sessionStore.players" :key="j">
+        <template v-for="(player, j) in sessionStore.game.players" :key="j">
           <Player
             :playerName="player.name"
             :floor="index"
@@ -55,7 +55,7 @@
       </div>
 
       <div class="controls">
-        <div v-if="isPlayer && sessionStore.diceValue" class="control-pad">
+        <div v-if="isPlayer && sessionStore.game.diceValue" class="control-pad">
           <div class="row full-width">
             <div
               v-ripple
@@ -120,6 +120,7 @@
 import { defineComponent } from 'vue';
 import { matrix, walls, doors } from './obstacles';
 import { useSessionStore } from 'stores/session';
+import { useLayoutStore } from 'stores/layout';
 
 import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
@@ -134,9 +135,11 @@ export default defineComponent({
 
   setup() {
     const sessionStore = useSessionStore();
+    const layoutStore = useLayoutStore();
 
     return {
       sessionStore,
+      layoutStore,
     };
   },
 
@@ -146,14 +149,27 @@ export default defineComponent({
   },
 
   mounted() {
-    if (this.isNpc) {
-      setTimeout(() => {
-        this.rollDice();
-      }, 1000);
+    this.setPlayerFocus();
+
+    if (!this.sessionStore.game.diceValue) {
+      if (this.isNpc) {
+        setTimeout(() => {
+          this.rollDice();
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          this.rollDiceBtnDialog = true;
+        }, 1000);
+      }
+    }
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (this.sessionStore.game.id) {
+      next(from);
+      this.layoutStore.exitGameDialog = true;
     } else {
-      setTimeout(() => {
-        this.rollDiceBtnDialog = true;
-      }, 1000);
+      next();
     }
   },
 
@@ -170,7 +186,7 @@ export default defineComponent({
   },
 
   watch: {
-    'sessionStore.rollDice': function (novo) {
+    'sessionStore.game.rollDice': function (novo) {
       if (!novo) {
         this.setPlayerFocus();
         if (this.isNpc) {
@@ -185,24 +201,21 @@ export default defineComponent({
   computed: {
     isPlayer() {
       return (
-        this.sessionStore.activePlayer.name ===
-        this.sessionStore.playerSelected.name
+        this.sessionStore.activePlayer?.name ===
+        this.sessionStore.playerSelected?.name
       );
     },
 
     isNpc() {
-      return (
-        this.sessionStore.activePlayer.name !==
-        this.sessionStore.playerSelected.name
-      );
+      return this.sessionStore.activePlayer.isNpc;
     },
 
     rollDiceBtnDialogComputed: {
       get() {
         return (
           this.isPlayer &&
-          !this.sessionStore.diceValue &&
-          !this.sessionStore.rollDice
+          !this.sessionStore.game.diceValue &&
+          !this.sessionStore.game.rollDice
         );
       },
       set() {
@@ -304,8 +317,8 @@ export default defineComponent({
     setPlayerPosition(player: any, nextFloor: number) {
       player.classList.remove('player-moving');
       this.sessionStore.activePlayer.playerPosition = nextFloor;
-      this.sessionStore.diceValue--;
-      if (this.sessionStore.diceValue && this.isNpc) {
+      this.sessionStore.game.diceValue--;
+      if (this.sessionStore.game.diceValue && this.isNpc) {
         setTimeout(() => {
           this.checkNpc();
         }, 1000);
@@ -316,13 +329,13 @@ export default defineComponent({
       );
       if (place) {
         this.enterPlace(place);
-      } else if (!this.sessionStore.diceValue) {
+      } else if (!this.sessionStore.game.diceValue) {
         this.setNextPlayer();
       }
     },
 
     enterPlace(place: any) {
-      this.sessionStore.diceValue = 0;
+      this.sessionStore.game.diceValue = 0;
       console.log(`Entrou no ${place.place}`);
       this.setNextPlayer();
     },
@@ -343,14 +356,14 @@ export default defineComponent({
 
     rollDice() {
       this.rollDiceBtnDialog = false;
-      this.sessionStore.rollDice = true;
+      this.sessionStore.game.rollDice = true;
     },
 
     checkNpc() {
       if (
         !this.isNpc ||
         this.$route.name !== 'game' ||
-        !this.sessionStore.diceValue
+        !this.sessionStore.game.diceValue
       ) {
         this.lastPosition = 0;
         return;

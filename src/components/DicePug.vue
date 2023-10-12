@@ -113,7 +113,7 @@ export default defineComponent({
           const opacity = getComputedStyle(elA).opacity;
           if (opacity == '1') {
             const span = elA.lastChild as HTMLElement;
-            this.sessionStore.diceValue = Number(span.innerHTML);
+            this.sessionStore.game.diceValue = Number(span.innerHTML);
           }
         } else {
           console.log('not found A');
@@ -123,7 +123,7 @@ export default defineComponent({
           const opacity = getComputedStyle(elB).opacity;
           if (opacity == '1') {
             const span = elB.lastChild as HTMLElement;
-            this.sessionStore.diceValue = Number(span.innerHTML);
+            this.sessionStore.game.diceValue = Number(span.innerHTML);
           }
         } else {
           console.log('not found B');
@@ -131,7 +131,7 @@ export default defineComponent({
       }
 
       setTimeout(() => {
-        // this.sessionStore.rollDice = false;
+        // this.sessionStore.game.rollDice = false;
       }, 1000);
     },
   },

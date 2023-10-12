@@ -6,8 +6,30 @@
   --green-color: #009688;
   --peacock-color: #b300b3;
   --clue-dark: #1d1d1d;
+  --clue-muted: rgb(165, 156, 156);
 }
 
 .clue-text-shadow {
   filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 1));
+}
+
+.clue-text-muted {
+  color: var(--clue-muted) !important;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 4000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }

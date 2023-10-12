@@ -17,8 +17,8 @@
     <q-badge
       v-if="
         sessionStore.activePlayer.name === playerName &&
-        sessionStore.diceValue &&
-        !sessionStore.rollDice
+        sessionStore.game.diceValue &&
+        !sessionStore.game.rollDice
       "
       floating
       color="positive"
@@ -29,7 +29,7 @@
         class="steps-left clue-text-shadow"
         :style="`color: var(--${playerName}-color)`"
       >
-        {{ sessionStore.diceValue }}
+        {{ sessionStore.game.diceValue }}
       </div>
     </q-badge>
   </q-avatar>

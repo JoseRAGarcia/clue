@@ -1,6 +1,6 @@
 <template>
   <q-dialog
-    v-model="sessionStore.rollDice"
+    v-model="sessionStore.game.rollDice"
     transition-show="scale"
     transition-hide="scale"
     persistent
