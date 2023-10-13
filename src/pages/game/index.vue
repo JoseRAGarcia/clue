@@ -164,6 +164,16 @@ export default defineComponent({
     }
   },
 
+  beforeRouteEnter(to, from, next) {
+    const sessionStore = useSessionStore();
+
+    if (!sessionStore.game.id || sessionStore.game.status !== 'started') {
+      next(false);
+    } else {
+      next();
+    }
+  },
+
   beforeRouteLeave(to, from, next) {
     if (this.sessionStore.game.id) {
       next(from);

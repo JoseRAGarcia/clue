@@ -74,8 +74,23 @@ export default defineComponent({
     };
   },
 
+  beforeRouteEnter(to, from, next) {
+    const sessionStore = useSessionStore();
+
+    if (!sessionStore.game.id) {
+      next(from);
+    } else {
+      next();
+    }
+  },
+
   beforeRouteLeave(to, from, next) {
-    if (this.sessionStore.game.id) {
+    if (to.path === '/game') return next();
+
+    if (
+      this.sessionStore.game.id &&
+      this.sessionStore.game.status !== 'started'
+    ) {
       next(from);
       this.layoutStore.exitGameDialog = true;
     } else {
