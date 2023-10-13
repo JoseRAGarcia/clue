@@ -1,17 +1,10 @@
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
-  // {
-  //   path: '/',
-  //   component: () => import('layouts/MainLayout.vue'),
-  //   children: [{ path: '', component: () => import('pages/index.vue') }],
-  // },
-
   {
     path: '/',
-    component: () => import('layouts/GameLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/index.vue') },
       {
         path: '/home',
         name: 'home',
@@ -22,6 +15,13 @@ const routes: RouteRecordRaw[] = [
         name: 'waiting-room',
         component: () => import('pages/waiting-room/index.vue')
       },
+    ],
+  },
+
+  {
+    path: '/',
+    component: () => import('layouts/GameLayout.vue'),
+    children: [
       {
         path: '/game',
         name: 'game',

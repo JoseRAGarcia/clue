@@ -7,11 +7,11 @@
           color="info"
           name="arrow_back"
           size="32px"
-          @click="$router.go(-1)"
+          @click="$router.push('/home')"
         />
       </div>
     </div>
-    <q-card class="q-pa-sm shadow-15">
+    <q-card class="q-pa-sm shadow-21">
       <div class="text-h6 q-mb-sm full-width flex flex-center">
         <span>Sala:</span>
         <span class="q-ml-sm text-primary">{{ sessionStore.game.room }}</span>
@@ -23,7 +23,7 @@
         <div
           class="character-card cursor-pointer relative-position"
           :class="{
-            'player-selected shadow-21 z-top': sessionStore.game.players.some(
+            'player-selected shadow-21': sessionStore.game.players.some(
               (p) => p.name === character.name && !p.isNpc
             ),
             'player-out-game': sessionStore.game.players.every(
@@ -176,6 +176,7 @@ export default defineComponent({
 
 .player-selected {
   transform: scale(120%);
+  z-index: 1;
 }
 
 .player-out-game {

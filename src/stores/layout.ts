@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useLayoutStore = defineStore('layout', {
   state: () => ({
     loadingLayout: false,
-    leftDrawerOpen: false,
+    rightDrawerOpen: false,
     exitGameDialog: false,
     helpDialog: false,
   }),

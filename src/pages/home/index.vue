@@ -28,7 +28,7 @@
       <q-btn
         flat
         style="width: 100%"
-        class="q-mt-sm"
+        class="q-mt-sm shadow-21"
         color="primary"
         label="Entrar em uma sala"
         @click="enterNewRoom"

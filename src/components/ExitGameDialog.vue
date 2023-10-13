@@ -4,14 +4,10 @@
     transition-show="scale"
     transition-hide="scale"
   >
-    <q-card>
-      <q-card-section
-        class="flex flex-center bg-primary text-white text-h6 q-pa-sm text-weight-bold"
-      >
-        <div class="text-h6" style="color: white">Sair do Jogo</div>
-      </q-card-section>
-      <q-card-section class="flex flex-center">
-        <div class="text-subtitle1 clue-text-muted">Deseja sair do jogo?</div>
+    <q-card class="q-dialog-plugin">
+      <q-card-section class="q-dialog__title"> Sair do Jogo </q-card-section>
+      <q-card-section class="q-dialog__message">
+        Deseja sair do jogo?
       </q-card-section>
       <q-card-actions class="flex justify-end">
         <q-btn
@@ -19,7 +15,7 @@
           autofocus
           color="primary"
           label="Não"
-          @click="layoutStore.loadingLayout = false"
+          @click="layoutStore.exitGameDialog = false"
         />
         <q-btn flat color="primary" label="Sim" @click="exitGame" />
       </q-card-actions>
@@ -48,7 +44,7 @@ export default defineComponent({
   methods: {
     async exitGame() {
       this.layoutStore.exitGameDialog = false;
-      this.layoutStore.leftDrawerOpen = false;
+      this.layoutStore.rightDrawerOpen = false;
 
       this.layoutStore.loadingLayout = true;
 
