@@ -207,7 +207,7 @@ export default defineComponent({
     },
 
     isNpc() {
-      return this.sessionStore.activePlayer.isNpc;
+      return this.sessionStore.activePlayer?.isNpc;
     },
 
     rollDiceBtnDialogComputed: {

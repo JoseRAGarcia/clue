@@ -1,5 +1,16 @@
 <template>
-  <q-page class="row items-center justify-evenly q-pa-md">
+  <q-page class="clue-container row items-center justify-evenly q-pa-md">
+    <div class="config-icon absolute-left q-pa-md">
+      <div class="relative-position" v-ripple>
+        <q-icon
+          class="cursor-pointer"
+          color="info"
+          name="arrow_back"
+          size="32px"
+          @click="$router.go(-1)"
+        />
+      </div>
+    </div>
     <q-card class="q-pa-sm shadow-15">
       <div class="text-h6 q-mb-sm full-width flex flex-center">
         <span>Sala:</span>
@@ -12,8 +23,9 @@
         <div
           class="character-card cursor-pointer relative-position"
           :class="{
-            'player-selected shadow-21 z-top':
-              sessionStore.playerSelected.name === character.name,
+            'player-selected shadow-21 z-top': sessionStore.game.players.some(
+              (p) => p.name === character.name && !p.isNpc
+            ),
             'player-out-game': sessionStore.game.players.every(
               (p) => p.name !== character.name
             ),
@@ -60,6 +72,15 @@ export default defineComponent({
       sessionStore,
       layoutStore,
     };
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (this.sessionStore.game.id) {
+      next(from);
+      this.layoutStore.exitGameDialog = true;
+    } else {
+      next();
+    }
   },
 
   methods: {
@@ -113,6 +134,7 @@ export default defineComponent({
       this.layoutStore.loadingLayout = true;
       setTimeout(() => {
         this.layoutStore.loadingLayout = false;
+        this.sessionStore.game.status = 'started';
         this.$router.push('/game');
       }, 500);
     },

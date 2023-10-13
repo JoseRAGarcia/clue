@@ -39,7 +39,7 @@ export default defineComponent({
   },
 
   mounted() {
-    let userId = localStorage.getItem('userId');
+    let userId: any = localStorage.getItem('userId');
     const game = localStorage.getItem('game');
     const playerSelected = localStorage.getItem('playerSelected');
 
@@ -55,7 +55,12 @@ export default defineComponent({
 
     if (game) {
       this.sessionStore.game = JSON.parse(game);
-      this.$router.push('/game');
+
+      if (this.sessionStore.game.status === 'waiting') {
+        this.$router.push('/waiting-room');
+      } else if (this.sessionStore.game.status === 'started') {
+        this.$router.push('/game');
+      }
     }
   },
 

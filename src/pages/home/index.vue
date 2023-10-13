@@ -1,28 +1,34 @@
 <template>
   <q-page
-    class="row items-center justify-evenly q-pa-md"
+    class="clue-container row items-center justify-evenly q-pa-md"
     style="display: flex; align-items: center; flex-wrap: wrap"
   >
     <div class="config-icon absolute-right q-pa-md">
       <div class="relative-position" v-ripple>
         <q-icon
-          class="spin clue-text-muted cursor-pointer"
+          class="spin cursor-pointer"
+          color="info"
+          style="opacity: 0.5"
           name="settings"
           size="32px"
           @click="openConfigDialog"
         />
       </div>
     </div>
-    <div class="full-width">
+    <div class="logo-container">
+      <q-img class="shadow-21 logo" src="img/clue_logo.png"></q-img>
+    </div>
+    <div class="full-width column flex-center">
       <q-btn
-        class="full-width"
+        style="width: 100%"
         color="primary"
         label="Novo Jogo"
         @click="createNewGame"
       />
       <q-btn
         flat
-        class="full-width q-mt-sm"
+        style="width: 100%"
+        class="q-mt-sm"
         color="primary"
         label="Entrar em uma sala"
         @click="enterNewRoom"
@@ -54,6 +60,7 @@ export default defineComponent({
     createNewGame() {
       this.sessionStore.game.id = uuidv4();
       this.sessionStore.game.room = 'ABC';
+      this.sessionStore.game.status = 'waiting';
 
       this.layoutStore.loadingLayout = true;
       setTimeout(() => {
@@ -90,3 +97,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.logo-container {
+  width: 500px;
+  height: 200px;
+}
+</style>

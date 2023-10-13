@@ -24,6 +24,7 @@ export const useSessionStore = defineStore('session', {
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
+      status: "finished",
     } as IGame,
 
     playerSelected: {} as IPlayer | any,
@@ -53,6 +54,7 @@ export const useSessionStore = defineStore('session', {
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,
+        status: "finished",
       }
       this.playerSelected = {}
     },

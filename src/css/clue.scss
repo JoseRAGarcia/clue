@@ -17,6 +17,12 @@
   color: var(--clue-muted) !important;
 }
 
+.clue-container {
+  background: url(/img/wallpaper.jpg) no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

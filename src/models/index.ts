@@ -22,4 +22,5 @@ export interface IGame {
   activeIndex: number;
   rollDice: boolean;
   diceValue: number;
+  status: string;
 }
