@@ -1,30 +1,27 @@
 import { defineStore } from 'pinia';
 import { IUser, IPlayer, IGame, ICharacter } from "src/models"
+import { useFirebaseStore } from 'stores/firebase';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
-    characters: [
-      { name: 'plum', playerPosition: 120 },
-      { name: 'scarlett', playerPosition: 16 },
-      { name: 'mustard', playerPosition: 191 },
-      { name: 'white', playerPosition: 590 },
-      { name: 'green', playerPosition: 585 },
-      { name: 'peacock', playerPosition: 432 },
-    ] as ICharacter[],
+    characters: [] as ICharacter[],
 
     user: {
-      id: null
+      id: '',
+      name: '',
+      gameId: '',
     } as IUser,
 
     game: {
-      id: null,
-      room: null,
+      id: '',
+      room: '',
+      ownerId: '',
       qtdPlayers: 6,
       players: [],
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
-      status: "finished",
+      status: "",
     } as IGame,
 
     playerSelected: {} as IPlayer | any,
@@ -46,17 +43,22 @@ export const useSessionStore = defineStore('session', {
     },
 
     cleanGame() {
+      const firebaseStore = useFirebaseStore();
+
       this.game = {
-        id: null,
-        room: null,
-        qtdPlayers: this.game.qtdPlayers,
+        id: '',
+        room: '',
+        ownerId: '',
+        qtdPlayers: 6,
         players: [],
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,
-        status: "finished",
+        status: "",
       }
       this.playerSelected = {}
+      this.user.gameId = ''
+      firebaseStore.updateUser(this.user)
     },
   },
 });

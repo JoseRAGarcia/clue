@@ -30,21 +30,46 @@
               (p) => p.name !== character.name
             ),
           }"
-          v-for="(character, index) in sessionStore.characters"
+          v-for="(character, index) in loadingCharacters
+            ? 6
+            : sessionStore.characters"
           :key="index"
           v-ripple
           @click="setPlayer(character)"
         >
+          <div v-if="loadingCharacters">
+            <q-skeleton width="91px" height="128px" />
+          </div>
           <q-img
+            v-else
             height="100%"
             width="100%"
             :src="`img/cards/${character.name}.jpg`"
           ></q-img>
+          <div
+            v-if="
+              sessionStore.game.players.some(
+                (p) => p.name === character.name && !p.isNpc
+              )
+            "
+            class="username-container"
+            :style="`border: 5px solid var(--${character.name}-color);`"
+          >
+            <div
+              class="username ellipsis"
+              :style="`background: var(--${character.name}-color); color: ${
+                character.name === 'white' ? '#000' : '#fff'
+              }`"
+            >
+              {{ sessionStore.user.name }}
+            </div>
+          </div>
         </div>
       </div>
     </q-card>
 
     <q-btn
+      v-if="sessionStore.game.ownerId === sessionStore.user.id"
       :disable="!sessionStore.playerSelected.name"
       class="full-width"
       color="primary"
@@ -58,6 +83,7 @@
 import { defineComponent } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
+import { useFirebaseStore } from 'stores/firebase';
 
 import { ICharacter, IPlayer } from 'src/models';
 
@@ -67,11 +93,21 @@ export default defineComponent({
   setup() {
     const sessionStore = useSessionStore();
     const layoutStore = useLayoutStore();
+    const firebaseStore = useFirebaseStore();
 
     return {
       sessionStore,
       layoutStore,
+      firebaseStore,
     };
+  },
+
+  async mounted() {
+    this.loadingCharacters = true;
+    await this.firebaseStore.getCharacters().then((response) => {
+      this.sessionStore.characters = Array.from(response);
+    });
+    this.loadingCharacters = false;
   },
 
   beforeRouteEnter(to, from, next) {
@@ -98,13 +134,30 @@ export default defineComponent({
     }
   },
 
-  methods: {
-    setPlayer(character: ICharacter) {
-      console.log(character);
+  data() {
+    return {
+      loadingCharacters: false,
+    };
+  },
 
+  watch: {
+    'sessionStore.game': {
+      handler: function (novo) {
+        if (!novo.id) {
+          this.$router.push('/home');
+        } else if (novo.status === 'started') {
+          this.$router.push('/game');
+        }
+      },
+      deep: true,
+    },
+  },
+
+  methods: {
+    async setPlayer(character: ICharacter) {
       const playerInGameIndex: number =
         this.sessionStore.game.players.findIndex(
-          (p) => p.name === this.sessionStore.playerSelected?.name
+          (p) => p.id === this.sessionStore.playerSelected?.id
         );
 
       if (playerInGameIndex >= 0) {
@@ -112,14 +165,16 @@ export default defineComponent({
       }
 
       const player: IPlayer = {
-        name: character.name,
-        playerPosition: character.playerPosition,
+        ...character,
         isNpc: false,
         isActive: false,
+        userId: `/user/${this.sessionStore.user.id}`,
       };
 
       this.sessionStore.game.players.push(player);
       this.sessionStore.playerSelected = player;
+
+      await this.firebaseStore.updateGame(this.sessionStore.game);
     },
 
     setBots() {
@@ -130,28 +185,27 @@ export default defineComponent({
           this.sessionStore.game.players.every((p) => p.name !== character.name)
         ) {
           const player: IPlayer = {
-            name: character.name,
-            playerPosition: character.playerPosition,
+            ...character,
             isNpc: true,
             isActive: false,
+            userId: '',
           };
 
           this.sessionStore.game.players.push(player);
         }
       });
 
-      console.log('set bots', this.sessionStore.game.players);
-
       this.startGame();
     },
 
-    startGame() {
+    async startGame() {
+      this.sessionStore.game.status = 'started';
+
       this.layoutStore.loadingLayout = true;
-      setTimeout(() => {
-        this.layoutStore.loadingLayout = false;
-        this.sessionStore.game.status = 'started';
+      await this.firebaseStore.updateGame(this.sessionStore.game).then(() => {
         this.$router.push('/game');
-      }, 500);
+      });
+      this.layoutStore.loadingLayout = false;
     },
   },
 });
@@ -177,10 +231,28 @@ export default defineComponent({
 .player-selected {
   transform: scale(120%);
   z-index: 1;
+  pointer-events: none;
+  touch-action: none;
 }
 
 .player-out-game {
   opacity: 0.5;
   filter: grayscale(1);
+}
+
+.username-container {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0;
+}
+.username {
+  padding: 2px;
+  border-radius: 0 0 0 5px;
+  opacity: 0.8;
 }
 </style>

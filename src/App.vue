@@ -16,7 +16,9 @@ import ExitGameDialog from 'components/ExitGameDialog.vue';
 import { defineComponent, ref } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
+import { useFirebaseStore } from 'stores/firebase';
 import { v4 as uuidv4 } from 'uuid';
+import { IUser } from './models';
 
 export default defineComponent({
   name: 'App',
@@ -24,6 +26,7 @@ export default defineComponent({
   setup() {
     const sessionStore = useSessionStore();
     const layoutStore = useLayoutStore();
+    const firebaseStore = useFirebaseStore();
 
     const userReady = ref(false);
 
@@ -31,6 +34,7 @@ export default defineComponent({
       sessionStore,
       layoutStore,
       userReady,
+      firebaseStore,
     };
   },
 
@@ -38,10 +42,8 @@ export default defineComponent({
     ExitGameDialog,
   },
 
-  mounted() {
+  async mounted() {
     let userId: any = localStorage.getItem('userId');
-    const game = localStorage.getItem('game');
-    const playerSelected = localStorage.getItem('playerSelected');
 
     if (!userId) {
       userId = uuidv4();
@@ -49,33 +51,41 @@ export default defineComponent({
     }
     this.sessionStore.user.id = userId;
 
+    const user: IUser | undefined = await this.firebaseStore.getUser(
+      this.sessionStore.user.id
+    );
+
+    if (user) {
+      this.sessionStore.user = user;
+    } else {
+      this.sessionStore.user.name = 'Player';
+      this.firebaseStore.createUser(this.sessionStore.user);
+    }
+
+    const playerSelected = localStorage.getItem('playerSelected');
+
     if (playerSelected) {
       this.sessionStore.playerSelected = JSON.parse(playerSelected);
     }
 
-    if (game) {
-      this.sessionStore.game = JSON.parse(game);
-
-      if (this.sessionStore.game.status === 'waiting') {
-        this.$router.push('/waiting-room');
-      } else if (this.sessionStore.game.status === 'started') {
-        this.$router.push('/game');
-      }
+    if (this.sessionStore.user.gameId) {
+      await this.firebaseStore
+        .getGame(this.sessionStore.user.gameId)
+        .then((response) => {
+          if (response.id) {
+            this.sessionStore.game = Object.assign({}, response);
+            this.firebaseStore.realTimeGame(this.sessionStore.game.id);
+            if (this.sessionStore.game.status === 'waiting') {
+              this.$router.push('/waiting-room');
+            } else if (this.sessionStore.game.status === 'started') {
+              this.$router.push('/game');
+            }
+          }
+        });
     }
   },
 
   watch: {
-    'sessionStore.game': {
-      handler: function (novo) {
-        if (novo.id) {
-          localStorage.setItem('game', JSON.stringify(novo));
-        } else {
-          localStorage.removeItem('game');
-        }
-      },
-      deep: true,
-    },
-
     'sessionStore.playerSelected': {
       handler: function (novo) {
         localStorage.setItem('playerSelected', JSON.stringify(novo));

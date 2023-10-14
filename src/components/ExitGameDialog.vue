@@ -27,6 +27,7 @@
 import { defineComponent } from 'vue';
 import { useLayoutStore } from 'stores/layout';
 import { useSessionStore } from 'stores/session';
+import { useFirebaseStore } from 'stores/firebase';
 
 export default defineComponent({
   name: 'ExitGameDialogComponent',
@@ -34,10 +35,12 @@ export default defineComponent({
   setup() {
     const layoutStore = useLayoutStore();
     const sessionStore = useSessionStore();
+    const firebaseStore = useFirebaseStore();
 
     return {
       layoutStore,
       sessionStore,
+      firebaseStore,
     };
   },
 
@@ -46,13 +49,31 @@ export default defineComponent({
       this.layoutStore.exitGameDialog = false;
       this.layoutStore.rightDrawerOpen = false;
 
-      this.layoutStore.loadingLayout = true;
-
-      setTimeout(() => {
-        this.sessionStore.cleanGame();
-        this.$router.push({ name: 'home' });
+      if (
+        this.sessionStore.game.ownerId === this.sessionStore.user.id ||
+        this.sessionStore.game.players.length === 1
+      ) {
+        this.layoutStore.loadingLayout = true;
+        await this.firebaseStore
+          .deleteGame(this.sessionStore.game.id)
+          .then(() => {
+            this.$router.push({ name: 'home' });
+          });
         this.layoutStore.loadingLayout = false;
-      }, 1000);
+      } else {
+        const playerInGameIndex: number =
+          this.sessionStore.game.players.findIndex(
+            (p) => p.id === this.sessionStore.playerSelected?.id
+          );
+
+        if (playerInGameIndex >= 0) {
+          this.sessionStore.game.players.splice(playerInGameIndex, 1);
+          this.firebaseStore.updateGame(this.sessionStore.game);
+          this.firebaseStore.rtGame();
+          this.sessionStore.cleanGame();
+          this.$router.push({ name: 'home' });
+        }
+      }
     },
   },
 });

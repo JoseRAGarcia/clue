@@ -31,7 +31,7 @@
         class="q-mt-sm shadow-21"
         color="primary"
         label="Entrar em uma sala"
-        @click="enterNewRoom"
+        @click="openEnterRoomDialog"
       />
     </div>
   </q-page>
@@ -41,6 +41,7 @@
 import { defineComponent } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
+import { useFirebaseStore } from 'stores/firebase';
 import { v4 as uuidv4 } from 'uuid';
 
 export default defineComponent({
@@ -49,28 +50,65 @@ export default defineComponent({
   setup() {
     const sessionStore = useSessionStore();
     const layoutStore = useLayoutStore();
+    const firebaseStore = useFirebaseStore();
 
     return {
       sessionStore,
       layoutStore,
+      firebaseStore,
     };
   },
 
   methods: {
-    createNewGame() {
+    async createNewGame() {
       this.sessionStore.game.id = uuidv4();
-      this.sessionStore.game.room = 'ABC';
+      this.sessionStore.game.room = Math.random()
+        .toString(36)
+        .slice(-3)
+        .toUpperCase();
       this.sessionStore.game.status = 'waiting';
+      this.sessionStore.game.ownerId = this.sessionStore.user.id;
 
       this.layoutStore.loadingLayout = true;
-      setTimeout(() => {
-        this.$router.push('/waiting-room');
-        this.layoutStore.loadingLayout = false;
-      }, 1000);
+      await this.firebaseStore
+        .createGame(this.sessionStore.game)
+        .then(() => {
+          this.firebaseStore.realTimeGame(this.sessionStore.game.id);
+          this.$router.push('/waiting-room');
+        })
+        .catch((error) => console.error(error));
+      this.layoutStore.loadingLayout = false;
     },
 
-    enterNewRoom() {
-      console.log('enterNewRoom');
+    async enterRoom(room: string) {
+      await this.firebaseStore
+        .getGameByRoom(room)
+        .then((response) => {
+          if (response.length) {
+            this.sessionStore.game = Object.assign({}, response[0]);
+            this.firebaseStore.realTimeGame(this.sessionStore.game.id);
+            this.$router.push('/waiting-room');
+          } else {
+            console.log('Sala não localizada!');
+          }
+        })
+        .catch((error) => console.error(error));
+    },
+
+    openEnterRoomDialog() {
+      this.$q
+        .dialog({
+          title: 'Entrar em um Sala',
+          message: 'Digite o código da Sala',
+          cancel: true,
+          prompt: {
+            model: '',
+            type: 'text',
+          },
+        })
+        .onOk((data) => {
+          this.enterRoom(data.toUpperCase());
+        });
     },
 
     openConfigDialog() {

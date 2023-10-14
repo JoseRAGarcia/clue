@@ -196,6 +196,15 @@ export default defineComponent({
   },
 
   watch: {
+    'sessionStore.game': {
+      handler: function (novo) {
+        if (!novo.id) {
+          this.$router.push('/home');
+        }
+      },
+      deep: true,
+    },
+
     'sessionStore.game.rollDice': function (novo) {
       if (!novo) {
         this.setPlayerFocus();
