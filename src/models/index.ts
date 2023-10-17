@@ -30,3 +30,9 @@ export interface IGame {
   diceValue: number;
   status: string;
 }
+
+export interface ICard {
+  id: string;
+  name: string;
+  category: string;
+}

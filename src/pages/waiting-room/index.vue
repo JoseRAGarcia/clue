@@ -11,7 +11,7 @@
         />
       </div>
     </div>
-    <q-card class="q-pa-sm shadow-21">
+    <q-card class="q-pa-md shadow-21">
       <div class="text-h6 q-mb-sm full-width flex flex-center">
         <span>Sala:</span>
         <span class="q-ml-sm text-primary">{{ sessionStore.game.room }}</span>
@@ -216,7 +216,7 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(auto-fill, 128px);
-  grid-gap: 10px;
+  grid-gap: 25px;
   margin: 0 auto;
   justify-content: center;
 }
@@ -229,7 +229,7 @@ export default defineComponent({
 }
 
 .player-selected {
-  transform: scale(120%);
+  transform: scale(115%);
   z-index: 1;
   pointer-events: none;
   touch-action: none;

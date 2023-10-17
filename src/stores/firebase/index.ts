@@ -14,10 +14,12 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
-  onSnapshot
+  onSnapshot,
+  connectFirestoreEmulator,
 } from 'firebase/firestore';
 import { IUser, IGame } from "src/models"
 import { useSessionStore } from 'stores/session';
+import { characters, cards } from 'src/fake-backend';
 
 export const useFirebaseStore = defineStore('firebase', {
   // https://www.npmjs.com/package/firebase
@@ -46,18 +48,36 @@ export const useFirebaseStore = defineStore('firebase', {
       }
 
       this.app = initializeApp(config)
-      this.initAnalytcs()
       this.initFirestore()
+    },
+
+    initFirestore() {
+      if (location.hostname === 'localhost') {
+        this.db = getFirestore();
+        connectFirestoreEmulator(this.db, 'localhost', 8080)
+
+        characters.forEach(character => {
+          const docRef = doc(this.db, 'character', character.id);
+          setDoc(docRef, character)
+        })
+        cards.forEach(card => {
+          const docRef = doc(this.db, 'card', card.id);
+          setDoc(docRef, card)
+        })
+
+      } else {
+        this.db = getFirestore(this.app);
+        cards.forEach(card => {
+          const docRef = doc(this.db, 'card', card.id);
+          setDoc(docRef, card)
+        })
+        this.initAnalytcs()
+      }
     },
 
     initAnalytcs() {
       this.analytics = getAnalytics(this.app);
     },
-
-    initFirestore() {
-      this.db = getFirestore(this.app);
-    },
-
 
     // User methods
     realTimeUsers(): void {
