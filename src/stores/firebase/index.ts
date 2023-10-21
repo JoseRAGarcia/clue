@@ -122,6 +122,13 @@ export const useFirebaseStore = defineStore('firebase', {
       return snapshot.docs.map((doc) => doc.data());
     },
 
+    // Cards methods
+    async getCards(): Promise<any[]> {
+      const colRef = collection(this.db, 'card');
+      const snapshot = await getDocs(colRef);
+      return snapshot.docs.map((doc) => doc.data());
+    },
+
     // Game methods
     realTimeGame(id: string): void {
       const sessionStore = useSessionStore();

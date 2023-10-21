@@ -6,6 +6,7 @@ export const useLayoutStore = defineStore('layout', {
     rightDrawerOpen: false,
     exitGameDialog: false,
     helpDialog: false,
+    cardsDialog: true,
   }),
 
   getters: {

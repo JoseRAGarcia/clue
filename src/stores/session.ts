@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
-import { IUser, IPlayer, IGame, ICharacter } from "src/models"
+import { IUser, IPlayer, IGame, ICharacter, ICard } from "src/models"
 import { useFirebaseStore } from 'stores/firebase';
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
     characters: [] as ICharacter[],
+    cards: [] as ICard[],
 
     user: {
       id: '',
@@ -18,6 +19,7 @@ export const useSessionStore = defineStore('session', {
       ownerId: '',
       qtdPlayers: 6,
       players: [],
+      targets: [],
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
@@ -51,6 +53,7 @@ export const useSessionStore = defineStore('session', {
         ownerId: '',
         qtdPlayers: 6,
         players: [],
+        targets: [],
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,

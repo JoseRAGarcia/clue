@@ -8,4 +8,12 @@ export default [
     isLink: true,
     action: "/home"
   },
+  {
+    label: "Cartas",
+    icon: "style",
+    fullWidth: true,
+    activeInGame: true,
+    isLink: false,
+    action: "cards"
+  },
 ]

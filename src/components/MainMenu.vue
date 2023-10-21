@@ -81,6 +81,12 @@ export default {
       this.layoutStore.rightDrawerOpen = false;
 
       if (item.isLink) return;
+
+      switch (item.action) {
+        case 'cards':
+          this.layoutStore.cardsDialog = true;
+          break;
+      }
     },
   },
 };

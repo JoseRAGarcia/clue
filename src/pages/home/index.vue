@@ -100,7 +100,10 @@ export default defineComponent({
         .dialog({
           title: 'Entrar em um Sala',
           message: 'Digite o código da Sala',
-          cancel: true,
+          cancel: {
+            flat: true,
+            label: 'Cancelar',
+          },
           prompt: {
             model: '',
             type: 'text',

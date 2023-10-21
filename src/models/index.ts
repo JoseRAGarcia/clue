@@ -17,6 +17,13 @@ export interface IPlayer {
   isNpc: boolean;
   isActive: boolean;
   userId: string;
+  cards: ICard[];
+}
+
+export interface ICard {
+  id: string;
+  name: string;
+  category: string;
 }
 
 export interface IGame {
@@ -25,14 +32,9 @@ export interface IGame {
   ownerId: string;
   qtdPlayers: number;
   players: IPlayer[];
+  targets: ICard[];
   activeIndex: number;
   rollDice: boolean;
   diceValue: number;
   status: string;
-}
-
-export interface ICard {
-  id: string;
-  name: string;
-  category: string;
 }

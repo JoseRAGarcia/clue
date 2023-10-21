@@ -114,6 +114,7 @@
   </div>
 
   <DiceDialog />
+  <CardsDialog />
 </template>
 
 <script lang="ts">
@@ -124,6 +125,7 @@ import { useLayoutStore } from 'stores/layout';
 
 import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
+import CardsDialog from 'components/CardsDialog.vue';
 
 interface ICoord {
   row: number;
@@ -146,6 +148,7 @@ export default defineComponent({
   components: {
     Player,
     DiceDialog,
+    CardsDialog,
   },
 
   mounted() {

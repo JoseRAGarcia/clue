@@ -85,7 +85,7 @@ import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
 import { useFirebaseStore } from 'stores/firebase';
 
-import { ICharacter, IPlayer } from 'src/models';
+import { ICharacter, IPlayer, ICard } from 'src/models';
 
 export default defineComponent({
   name: 'WaitingRoom',
@@ -106,6 +106,9 @@ export default defineComponent({
     this.loadingCharacters = true;
     await this.firebaseStore.getCharacters().then((response) => {
       this.sessionStore.characters = Array.from(response);
+    });
+    await this.firebaseStore.getCards().then((response) => {
+      this.sessionStore.cards = Array.from(response);
     });
     this.loadingCharacters = false;
   },
@@ -169,6 +172,7 @@ export default defineComponent({
         isNpc: false,
         isActive: false,
         userId: `/user/${this.sessionStore.user.id}`,
+        cards: [],
       };
 
       this.sessionStore.game.players.push(player);
@@ -189,9 +193,57 @@ export default defineComponent({
             isNpc: true,
             isActive: false,
             userId: '',
+            cards: [],
           };
 
           this.sessionStore.game.players.push(player);
+        }
+      });
+
+      this.giveCards();
+    },
+
+    async giveCards() {
+      const characterCards = this.sessionStore.cards.filter(
+        (c) => c.category === 'character'
+      );
+      const weaponCards = this.sessionStore.cards.filter(
+        (c) => c.category === 'weapon'
+      );
+      const placeCards = this.sessionStore.cards.filter(
+        (c) => c.category === 'place'
+      );
+
+      const targetCharacter =
+        characterCards[Math.floor(Math.random() * characterCards.length)];
+      const targetWeapon =
+        weaponCards[Math.floor(Math.random() * weaponCards.length)];
+      const targetPlace =
+        placeCards[Math.floor(Math.random() * placeCards.length)];
+
+      this.sessionStore.game.targets = [
+        targetCharacter,
+        targetWeapon,
+        targetPlace,
+      ];
+
+      const givenCards: ICard[] = [];
+      let playerIndex = 0;
+      this.sessionStore.cards.forEach((card) => {
+        const isTarget = this.sessionStore.game.targets.find(
+          (c) => c.id === card.id
+        );
+        const isGivenCard = givenCards.find((c) => c.id === card.id);
+
+        if (isTarget || isGivenCard) return;
+
+        this.sessionStore.game.players[playerIndex].cards.push(card);
+        givenCards.push(card);
+
+        if (playerIndex < this.sessionStore.game.qtdPlayers - 1) {
+          playerIndex++;
+        } else {
+          playerIndex = 0;
         }
       });
 
