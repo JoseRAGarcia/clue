@@ -122,15 +122,11 @@ import { defineComponent } from 'vue';
 import { matrix, walls, doors } from './obstacles';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
+import { useFirebaseStore } from 'stores/firebase';
 
 import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
-
-interface ICoord {
-  row: number;
-  col: number;
-}
 
 export default defineComponent({
   name: 'GamePage',
@@ -138,10 +134,12 @@ export default defineComponent({
   setup() {
     const sessionStore = useSessionStore();
     const layoutStore = useLayoutStore();
+    const firebaseStore = useFirebaseStore();
 
     return {
       sessionStore,
       layoutStore,
+      firebaseStore,
     };
   },
 
@@ -154,16 +152,14 @@ export default defineComponent({
   mounted() {
     this.setPlayerFocus();
 
-    if (!this.sessionStore.game.diceValue) {
-      if (this.isNpc) {
-        setTimeout(() => {
-          this.rollDice();
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          this.rollDiceBtnDialog = true;
-        }, 1000);
-      }
+    if (this.isNpc && this.isOwner) {
+      setTimeout(() => {
+        this.rollDice();
+      }, 1000);
+    } else if (this.isPlayer) {
+      setTimeout(() => {
+        this.rollDiceBtnDialog = true;
+      }, 1000);
     }
   },
 
@@ -203,6 +199,8 @@ export default defineComponent({
       handler: function (novo) {
         if (!novo.id) {
           this.$router.push('/home');
+        } else {
+          this.firebaseStore.updateGame(this.sessionStore.game);
         }
       },
       deep: true,
@@ -218,13 +216,35 @@ export default defineComponent({
         }
       }
     },
+
+    'sessionStore.activePlayer': {
+      handler: function (novo, antigo) {
+        if (novo.id === antigo.id) return;
+
+        this.setPlayerFocus();
+        if (this.isNpc && this.isOwner) {
+          setTimeout(() => {
+            this.rollDice();
+          }, 1000);
+        } else if (this.isPlayer) {
+          setTimeout(() => {
+            this.rollDiceBtnDialog = true;
+          }, 1000);
+        }
+      },
+      deep: true,
+    },
   },
 
   computed: {
+    isOwner() {
+      return this.sessionStore.game.ownerId === this.sessionStore.user?.id;
+    },
+
     isPlayer() {
       return (
-        this.sessionStore.activePlayer?.name ===
-        this.sessionStore.playerSelected?.name
+        this.sessionStore.activePlayer?.id ===
+        this.sessionStore.playerSelected?.id
       );
     },
 
@@ -364,20 +384,11 @@ export default defineComponent({
 
     setNextPlayer() {
       this.sessionStore.changeActivePlayer();
-      this.setPlayerFocus();
-      if (this.isNpc) {
-        setTimeout(() => {
-          this.rollDice();
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          this.rollDiceBtnDialog = true;
-        }, 1000);
-      }
     },
 
     rollDice() {
       this.rollDiceBtnDialog = false;
+      this.sessionStore.game.diceValue = 12;
       this.sessionStore.game.rollDice = true;
     },
 

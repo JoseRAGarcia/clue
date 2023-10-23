@@ -227,9 +227,13 @@ export default defineComponent({
         targetPlace,
       ];
 
+      const randomCards = this.shuffle(this.sessionStore.cards);
       const givenCards: ICard[] = [];
       let playerIndex = 0;
-      this.sessionStore.cards.forEach((card) => {
+
+      console.log('randomCards', randomCards);
+
+      randomCards.forEach((card) => {
         const isTarget = this.sessionStore.game.targets.find(
           (c) => c.id === card.id
         );
@@ -258,6 +262,26 @@ export default defineComponent({
         this.$router.push('/game');
       });
       this.layoutStore.loadingLayout = false;
+    },
+
+    shuffle(array: any[]) {
+      let currentIndex = array.length,
+        randomIndex;
+
+      // While there remain elements to shuffle.
+      while (currentIndex > 0) {
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+      }
+
+      return array;
     },
   },
 });

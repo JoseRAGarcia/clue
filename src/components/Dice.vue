@@ -143,12 +143,12 @@ export default defineComponent({
   methods: {
     roll() {
       setTimeout(() => {
-        const randomNum = Math.floor(Math.random() * 36) + 1;
+        // const randomNum = Math.floor(Math.random() * 36) + 1;
         const randomElA = document.querySelector(
-          `.rollA${randomNum}`
+          `.rollA${this.sessionStore.game.diceValue}`
         ) as HTMLElement;
         const randomElB = document.querySelector(
-          `.rollB${randomNum}`
+          `.rollB${this.sessionStore.game.diceValue}`
         ) as HTMLElement;
 
         if (randomElA) {
