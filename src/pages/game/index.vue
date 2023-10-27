@@ -16,7 +16,7 @@
           <Player
             :playerName="player.name"
             :floor="index"
-            :playerPosition="player.playerPosition"
+            :playerPosition="getPlayerPosition(player)"
           />
         </template>
       </div>
@@ -127,6 +127,7 @@ import { useFirebaseStore } from 'stores/firebase';
 import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
+import { IPlayer } from 'src/models';
 
 export default defineComponent({
   name: 'GamePage',
@@ -151,6 +152,8 @@ export default defineComponent({
 
   mounted() {
     this.setPlayerFocus();
+
+    this.localPlayers = Array.from(this.sessionStore.game.players);
 
     if (this.isNpc && this.isOwner) {
       setTimeout(() => {
@@ -191,6 +194,7 @@ export default defineComponent({
       rollDiceBtnDialog: false,
       nextDoor: 0,
       lastPosition: 0,
+      localPlayers: [] as IPlayer[],
     };
   },
 
@@ -209,7 +213,7 @@ export default defineComponent({
     'sessionStore.game.rollDice': function (novo) {
       if (!novo) {
         this.setPlayerFocus();
-        if (this.isNpc) {
+        if (this.isNpc && this.isOwner) {
           setTimeout(() => {
             this.checkNpc();
           }, 1000);
@@ -359,8 +363,9 @@ export default defineComponent({
     setPlayerPosition(player: any, nextFloor: number) {
       player.classList.remove('player-moving');
       this.sessionStore.activePlayer.playerPosition = nextFloor;
+
       this.sessionStore.game.diceValue--;
-      if (this.sessionStore.game.diceValue && this.isNpc) {
+      if (this.sessionStore.game.diceValue && this.isNpc && this.isOwner) {
         setTimeout(() => {
           this.checkNpc();
         }, 1000);
@@ -390,6 +395,38 @@ export default defineComponent({
       this.rollDiceBtnDialog = false;
       this.sessionStore.game.diceValue = 12;
       this.sessionStore.game.rollDice = true;
+    },
+
+    walk() {
+      alert('walk');
+      let movement;
+
+      const localPlayer = this.localPlayers.find(
+        (p) => p.id === this.sessionStore.activePlayer.id
+      );
+
+      if (localPlayer) {
+        const oldPosition = localPlayer.playerPosition;
+
+        const newPosition = this.sessionStore.activePlayer.playerPosition;
+
+        if (oldPosition - 24 === newPosition) {
+          movement = 'up';
+        } else if (oldPosition + 1 === newPosition) {
+          movement = 'right';
+        } else if (oldPosition + 24 === newPosition) {
+          movement = 'down';
+        } else if (oldPosition - 1 === newPosition) {
+          movement = 'left';
+        }
+
+        movement && this.padMovePlayer(movement);
+
+        // const localPlayerIndex = this.localPlayers.findIndex(
+        //   (p) => p.id === this.sessionStore.activePlayer.id
+        // );
+        // this.localPlayers[localPlayerIndex].playerPosition = newPosition;
+      }
     },
 
     checkNpc() {
@@ -519,6 +556,15 @@ export default defineComponent({
       });
 
       return { col: coorCol, row: coordRow };
+    },
+
+    getPlayerPosition(player: IPlayer) {
+      if (this.isPlayer) {
+        return player.playerPosition;
+      } else {
+        return this.localPlayers.find((p) => p.id === player.id)
+          ?.playerPosition;
+      }
     },
 
     setPlayerFocus(index?: string) {

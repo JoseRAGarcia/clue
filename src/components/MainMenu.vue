@@ -1,5 +1,11 @@
 <template>
-  <q-drawer side="right" overlay v-model="layoutStore.rightDrawerOpen" bordered>
+  <q-drawer
+    side="right"
+    class="z-max"
+    overlay
+    v-model="layoutStore.rightDrawerOpen"
+    bordered
+  >
     <q-list>
       <q-item v-ripple class="q-pa-none">
         <q-item-section>

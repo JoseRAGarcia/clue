@@ -17,7 +17,7 @@ export const useSessionStore = defineStore('session', {
       id: '',
       room: '',
       ownerId: '',
-      qtdPlayers: 6,
+      qtdPlayers: 3,
       players: [],
       targets: [],
       activeIndex: 0,

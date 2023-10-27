@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-btn
-      class="menu-btn clue-text-shadow"
+      class="menu-btn clue-text-shadow z-max"
       flat
       dense
       round
