@@ -204,7 +204,11 @@ export default defineComponent({
         if (!novo.id) {
           this.$router.push('/home');
         } else {
-          this.firebaseStore.updateGame(this.sessionStore.game);
+          this.firebaseStore.updateGame(novo);
+
+          if (!novo.diceValue) {
+            this.localPlayers = Array.from(novo.players);
+          }
         }
       },
       deep: true,
@@ -223,6 +227,12 @@ export default defineComponent({
 
     'sessionStore.activePlayer': {
       handler: function (novo, antigo) {
+        if (novo.playerPosition !== antigo.playerPosition) {
+          if ((this.isNpc && !this.isOwner) || !this.isPlayer) {
+            this.walk();
+          }
+        }
+
         if (novo.id === antigo.id) return;
 
         this.setPlayerFocus();
@@ -271,7 +281,9 @@ export default defineComponent({
   },
 
   methods: {
-    padMovePlayer(direction: string): boolean | undefined {
+    padMovePlayer(direction: string, walk?: boolean): boolean | undefined {
+      console.log('padMovePlayer', direction);
+
       let player: any = document.querySelector(
         `#${this.sessionStore.activePlayer.name}`
       );
@@ -281,7 +293,8 @@ export default defineComponent({
       const left = parseInt(getComputedStyle(player).left.replace('px', ''));
 
       if (direction === 'up') {
-        const nextFloor = this.sessionStore.activePlayer.playerPosition - 24;
+        const nextFloor =
+          this.sessionStore.activePlayer.playerPosition - (walk ? 0 : 24);
         if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
@@ -292,10 +305,15 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          this.setPlayerPosition(player, nextFloor);
+          if (!walk) {
+            this.setPlayerPosition(player, nextFloor);
+          } else {
+            this.localPlayers = Array.from(this.sessionStore.game.players);
+          }
         }, 300);
       } else if (direction === 'right') {
-        const nextFloor = this.sessionStore.activePlayer.playerPosition + 1;
+        const nextFloor =
+          this.sessionStore.activePlayer.playerPosition + (walk ? 0 : 1);
         if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
@@ -306,10 +324,15 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          this.setPlayerPosition(player, nextFloor);
+          if (!walk) {
+            this.setPlayerPosition(player, nextFloor);
+          } else {
+            this.localPlayers = Array.from(this.sessionStore.game.players);
+          }
         }, 300);
       } else if (direction === 'down') {
-        const nextFloor = this.sessionStore.activePlayer.playerPosition + 24;
+        const nextFloor =
+          this.sessionStore.activePlayer.playerPosition + (walk ? 0 : 24);
         if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
@@ -320,10 +343,15 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          this.setPlayerPosition(player, nextFloor);
+          if (!walk) {
+            this.setPlayerPosition(player, nextFloor);
+          } else {
+            this.localPlayers = Array.from(this.sessionStore.game.players);
+          }
         }, 300);
       } else if (direction === 'left') {
-        const nextFloor = this.sessionStore.activePlayer.playerPosition - 1;
+        const nextFloor =
+          this.sessionStore.activePlayer.playerPosition - (walk ? 0 : 1);
         if (!this.checkObstacle(nextFloor)) return false;
 
         player.classList.add('player-moving');
@@ -334,7 +362,11 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-          this.setPlayerPosition(player, nextFloor);
+          if (!walk) {
+            this.setPlayerPosition(player, nextFloor);
+          } else {
+            this.localPlayers = Array.from(this.sessionStore.game.players);
+          }
         }, 300);
       }
 
@@ -343,6 +375,7 @@ export default defineComponent({
     },
 
     checkObstacle(nextFloor: number): boolean {
+      console.log('checkObstacle', nextFloor);
       const place = this.doors.find((d) => d.door == nextFloor);
 
       if (
@@ -362,6 +395,9 @@ export default defineComponent({
 
     setPlayerPosition(player: any, nextFloor: number) {
       player.classList.remove('player-moving');
+
+      console.log('nextFloor', nextFloor);
+
       this.sessionStore.activePlayer.playerPosition = nextFloor;
 
       this.sessionStore.game.diceValue--;
@@ -398,7 +434,8 @@ export default defineComponent({
     },
 
     walk() {
-      alert('walk');
+      console.log('walk');
+
       let movement;
 
       const localPlayer = this.localPlayers.find(
@@ -407,20 +444,26 @@ export default defineComponent({
 
       if (localPlayer) {
         const oldPosition = localPlayer.playerPosition;
+        console.log('oldPosition', oldPosition);
 
         const newPosition = this.sessionStore.activePlayer.playerPosition;
 
-        if (oldPosition - 24 === newPosition) {
+        console.log('newPosition', newPosition);
+
+        if (oldPosition - 24 == newPosition) {
           movement = 'up';
-        } else if (oldPosition + 1 === newPosition) {
+        } else if (oldPosition + 1 == newPosition) {
           movement = 'right';
-        } else if (oldPosition + 24 === newPosition) {
+        } else if (oldPosition + 24 == newPosition) {
           movement = 'down';
-        } else if (oldPosition - 1 === newPosition) {
+        } else if (oldPosition - 1 == newPosition) {
           movement = 'left';
         }
 
-        movement && this.padMovePlayer(movement);
+        if (movement) {
+          this.padMovePlayer(movement, true);
+          console.log('walk', movement);
+        }
 
         // const localPlayerIndex = this.localPlayers.findIndex(
         //   (p) => p.id === this.sessionStore.activePlayer.id
