@@ -23,6 +23,7 @@ export const useSessionStore = defineStore('session', {
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
+      place: "",
       status: "",
     } as IGame,
 
@@ -57,6 +58,7 @@ export const useSessionStore = defineStore('session', {
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,
+        place: "",
         status: "",
       }
       this.playerSelected = {}

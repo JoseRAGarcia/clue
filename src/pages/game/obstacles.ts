@@ -31,86 +31,86 @@ export const doors: IDoor[] = [
   {
     door: 78,
     entry: 102,
-    place: 'study'
+    place: 'escritorio'
   },
   {
     door: 105,
     entry: 104,
-    place: 'hall'
+    place: 'entrada'
   },
   {
     door: 155,
     entry: 179,
-    place: 'hall'
+    place: 'entrada'
   },
   {
     door: 156,
     entry: 180,
-    place: 'hall'
+    place: 'entrada'
   },
   {
     door: 137,
     entry: 161,
-    place: 'louge'
+    place: 'salaestar'
   },
   {
     door: 233,
     entry: 209,
-    place: 'dinning'
+    place: 'salajantar'
   },
   {
     door: 304,
     entry: 303,
-    place: 'dinning'
+    place: 'salajantar'
   },
   {
     door: 451,
     entry: 427,
-    place: 'kitchen'
+    place: 'cozinha'
   },
   {
     door: 471,
     entry: 472,
-    place: 'ballroom'
+    place: 'salamusica'
   },
   {
     door: 422,
     entry: 398,
-    place: 'ballroom'
+    place: 'salamusica'
   },
   {
     door: 417,
     entry: 393,
-    place: 'ballroom'
+    place: 'salamusica'
   },
   {
     door: 464,
     entry: 463,
-    place: 'ballroom'
+    place: 'salamusica'
   },
   {
     door: 460,
     entry: 461,
-    place: 'conservatory'
+    place: 'jardiminverno'
   },
   {
     door: 365,
     entry: 366,
-    place: 'billiard'
+    place: 'salaojogos'
   },
   {
     door: 289,
     entry: 265,
-    place: 'billiard'
+    place: 'salaojogos'
   },
   {
     door: 198,
     entry: 199,
-    place: 'library'
+    place: 'biblioteca'
   },
   {
     door: 243,
     entry: 267,
-    place: 'library'
+    place: 'biblioteca'
   },
 ];

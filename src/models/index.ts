@@ -37,4 +37,5 @@ export interface IGame {
   rollDice: boolean;
   diceValue: number;
   status: string;
+  place: string;
 }

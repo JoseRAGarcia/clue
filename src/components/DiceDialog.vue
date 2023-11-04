@@ -5,6 +5,7 @@
     transition-hide="scale"
     persistent
     full-width
+    style="z-index: 999"
   >
     <component :is="Dice" />
   </q-dialog>

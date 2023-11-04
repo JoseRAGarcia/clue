@@ -97,6 +97,7 @@
         transition-hide="scale"
         persistent
         full-width
+        style="z-index: 999"
       >
         <div class="d-flex column flex-center transparent">
           <div class="text-white text-h4 clue-text-shadow">Role os Dados</div>
@@ -115,6 +116,7 @@
 
   <DiceDialog />
   <CardsDialog />
+  <PlaceDialog />
 </template>
 
 <script lang="ts">
@@ -127,6 +129,7 @@ import { useFirebaseStore } from 'stores/firebase';
 import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
+import PlaceDialog from 'components/PlaceDialog.vue';
 import { IPlayer } from 'src/models';
 
 export default defineComponent({
@@ -148,6 +151,7 @@ export default defineComponent({
     Player,
     DiceDialog,
     CardsDialog,
+    PlaceDialog,
   },
 
   mounted() {
@@ -247,6 +251,12 @@ export default defineComponent({
         }
       },
       deep: true,
+    },
+
+    'layoutStore.placeDialog': function (novo) {
+      if (!novo) {
+        this.setNextPlayer();
+      }
     },
   },
 
@@ -419,8 +429,10 @@ export default defineComponent({
 
     enterPlace(place: any) {
       this.sessionStore.game.diceValue = 0;
+      this.sessionStore.game.place = place.place;
+      this.layoutStore.placeDialog = true;
       console.log(`Entrou no ${place.place}`);
-      this.setNextPlayer();
+      // this.setNextPlayer();
     },
 
     setNextPlayer() {

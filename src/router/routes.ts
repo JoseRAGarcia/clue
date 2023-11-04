@@ -26,7 +26,7 @@ const routes: RouteRecordRaw[] = [
         path: '/game',
         name: 'game',
         component: () => import('pages/game/index.vue')
-      }
+      },
     ],
   },
 
