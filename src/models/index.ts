@@ -1,3 +1,4 @@
+import { characters } from './../fake-backend/index';
 export interface IUser {
   id: string;
   name: string;
@@ -26,6 +27,13 @@ export interface ICard {
   category: string;
 }
 
+export interface IPlace {
+  indictment: boolean;
+  character: string;
+  weapon: string;
+  place: string;
+}
+
 export interface IGame {
   id: string;
   room: string;
@@ -37,5 +45,5 @@ export interface IGame {
   rollDice: boolean;
   diceValue: number;
   status: string;
-  place: string;
+  place: IPlace;
 }

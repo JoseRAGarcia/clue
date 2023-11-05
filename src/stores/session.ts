@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IUser, IPlayer, IGame, ICharacter, ICard } from "src/models"
+import { IUser, IPlayer, IGame, ICharacter, ICard, IPlace } from "src/models";
 import { useFirebaseStore } from 'stores/firebase';
 
 export const useSessionStore = defineStore('session', {
@@ -23,7 +23,7 @@ export const useSessionStore = defineStore('session', {
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
-      place: "",
+      place: {} as IPlace,
       status: "",
     } as IGame,
 
@@ -58,7 +58,7 @@ export const useSessionStore = defineStore('session', {
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,
-        place: "",
+        place: {} as IPlace,
         status: "",
       }
       this.playerSelected = {}

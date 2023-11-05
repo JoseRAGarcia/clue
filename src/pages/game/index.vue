@@ -116,7 +116,7 @@
 
   <DiceDialog />
   <CardsDialog />
-  <PlaceDialog />
+  <PlaceDialog :isPlayer="isPlayer" />
 </template>
 
 <script lang="ts">
@@ -253,10 +253,14 @@ export default defineComponent({
       deep: true,
     },
 
-    'layoutStore.placeDialog': function (novo) {
-      if (!novo) {
-        this.setNextPlayer();
-      }
+    'sessionStore.game.place.place': {
+      handler: function (novo) {
+        if (novo) {
+          this.layoutStore.placeDialog = true;
+        } else {
+          this.layoutStore.placeDialog = false;
+        }
+      },
     },
   },
 
@@ -429,8 +433,7 @@ export default defineComponent({
 
     enterPlace(place: any) {
       this.sessionStore.game.diceValue = 0;
-      this.sessionStore.game.place = place.place;
-      this.layoutStore.placeDialog = true;
+      this.sessionStore.game.place.place = place.place;
       console.log(`Entrou no ${place.place}`);
       // this.setNextPlayer();
     },
