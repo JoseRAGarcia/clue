@@ -22,6 +22,13 @@
   background: url(/img/wallpaper.jpg) no-repeat;
   background-size: cover;
   background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clue-page {
+  min-width: 200px !important;
+  width: 1200px !important;
 }
 
 @keyframes spin {

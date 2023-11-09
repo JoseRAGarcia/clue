@@ -1,5 +1,5 @@
 <template>
-  <q-page class="clue-container row items-center justify-evenly q-pa-md">
+  <q-page class="clue-page shadow-21 row items-center justify-evenly q-pa-md">
     <div class="config-icon absolute-left q-pa-md">
       <div class="relative-position" v-ripple>
         <q-icon

@@ -3,15 +3,15 @@
     v-model="layoutStore.placeDialog"
     transition-show="scale"
     transition-hide="scale"
-    full-height
     full-width
+    full-height
     persistent
     style="z-index: 999"
   >
     <q-card
       class="q-dialog-plugin overflow-hidden"
       :style="`background: url(img/places/${sessionStore.game.place.place}.jpg) no-repeat;
-  background-position: center; background-size: cover`"
+  background-position: center; background-size: cover; width: 1200px !important;`"
     >
       <q-card-section class="q-dialog__title q-pa-none">
         <div class="clue-text-shadow text-white shadow-21 q-pa-md">

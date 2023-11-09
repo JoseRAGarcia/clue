@@ -1,6 +1,6 @@
 <template>
   <q-page
-    class="clue-container row items-center justify-evenly q-pa-md"
+    class="clue-page shadow-21 row items-center justify-evenly q-pa-md"
     style="display: flex; align-items: center; flex-wrap: wrap"
   >
     <div class="config-icon absolute-right q-pa-md">

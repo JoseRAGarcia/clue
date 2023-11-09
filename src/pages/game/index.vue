@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <q-page class="clue-page">
     <div class="board">
       <div
         class="floor"
@@ -112,8 +112,7 @@
         </div>
       </q-dialog>
     </div>
-  </div>
-
+  </q-page>
   <DiceDialog />
   <CardsDialog />
   <PlaceDialog :isPlayer="isPlayer" />
@@ -817,7 +816,7 @@ export default defineComponent({
   position: relative;
   height: 110px;
   width: 110px;
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
   cursor: pointer;
 }
 </style>
