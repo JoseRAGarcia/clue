@@ -19,6 +19,8 @@ export interface IPlayer {
   isActive: boolean;
   userId: string;
   cards: ICard[];
+  checklist: ICard[];
+  suspicious: ICard[];
 }
 
 export interface ICard {

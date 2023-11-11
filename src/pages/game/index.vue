@@ -1,5 +1,33 @@
 <template>
   <q-page class="clue-page">
+    <div
+      class="options-bar fixed-top flex justify-end"
+      :style="loaded && 'top: 0;'"
+    >
+      <div v-ripple class="options-bar-item">
+        <q-icon
+          name="checklist_rtl"
+          size="24px"
+          color="primary"
+          @click="layoutStore.checklistDialog = true"
+        />
+      </div>
+      <div
+        v-ripple
+        class="options-bar-item"
+        @click="layoutStore.cardsDialog = true"
+      >
+        <q-icon name="style" size="24px" color="primary" />
+      </div>
+      <div v-ripple class="options-bar-item">
+        <q-icon
+          name="logout"
+          size="24px"
+          color="primary"
+          @click="$router.push('/home')"
+        />
+      </div>
+    </div>
     <div class="board">
       <div
         class="floor"
@@ -115,6 +143,7 @@
   </q-page>
   <DiceDialog />
   <CardsDialog />
+  <ChecklistDialog />
   <PlaceDialog :isPlayer="isPlayer" />
 </template>
 
@@ -129,6 +158,8 @@ import Player from 'components/Player.vue';
 import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
 import PlaceDialog from 'components/PlaceDialog.vue';
+import ChecklistDialog from 'components/ChecklistDialog.vue';
+
 import { IPlayer } from 'src/models';
 
 export default defineComponent({
@@ -150,10 +181,12 @@ export default defineComponent({
     Player,
     DiceDialog,
     CardsDialog,
+    ChecklistDialog,
     PlaceDialog,
   },
 
   mounted() {
+    this.loaded = true;
     this.setPlayerFocus();
 
     this.localPlayers = Array.from(this.sessionStore.game.players);
@@ -192,6 +225,7 @@ export default defineComponent({
     return {
       walls,
       doors,
+      loaded: false,
       showMarkers: false,
       lastDirection: 'up',
       rollDiceBtnDialog: false,
@@ -802,6 +836,29 @@ export default defineComponent({
   height: 200px;
   z-index: 1;
 }
+
+.options-bar {
+  top: -100%;
+  transition: top 1s;
+  z-index: 1;
+}
+
+.options-bar-item {
+  position: relative;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid var(--q-primary);
+  border-radius: 50%;
+  margin-top: 5px;
+  margin-right: 15px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+.options-bar-item:hover {
+  opacity: 1;
+}
+
 .control-pad {
   overflow: hidden;
   display: flex;

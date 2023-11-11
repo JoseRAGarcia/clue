@@ -43,6 +43,10 @@ export default defineComponent({
   },
 
   async mounted() {
+    await this.firebaseStore.getCards().then((response) => {
+      this.sessionStore.cards = Array.from(response);
+    });
+
     let userId: any = localStorage.getItem('userId');
 
     if (!userId) {

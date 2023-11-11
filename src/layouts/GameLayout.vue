@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-btn
+    <!-- <q-btn
       class="menu-btn clue-text-shadow z-max"
       flat
       dense
@@ -12,7 +12,7 @@
         layoutStore.rightDrawerOpen ? '300px;' : '10px;'
       }`"
       @click="toggleRightDrawer"
-    />
+    /> -->
     <MainMenu />
     <q-page-container class="clue-container">
       <router-view />

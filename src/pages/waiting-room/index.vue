@@ -107,9 +107,9 @@ export default defineComponent({
     await this.firebaseStore.getCharacters().then((response) => {
       this.sessionStore.characters = Array.from(response);
     });
-    await this.firebaseStore.getCards().then((response) => {
-      this.sessionStore.cards = Array.from(response);
-    });
+    // await this.firebaseStore.getCards().then((response) => {
+    //   this.sessionStore.cards = Array.from(response);
+    // });
     this.loadingCharacters = false;
   },
 
@@ -173,6 +173,8 @@ export default defineComponent({
         isActive: false,
         userId: `/user/${this.sessionStore.user.id}`,
         cards: [],
+        checklist: [],
+        suspicious: [],
       };
 
       this.sessionStore.game.players.push(player);
@@ -194,6 +196,8 @@ export default defineComponent({
             isActive: false,
             userId: '',
             cards: [],
+            checklist: [],
+            suspicious: [],
           };
 
           this.sessionStore.game.players.push(player);
@@ -242,6 +246,7 @@ export default defineComponent({
         if (isTarget || isGivenCard) return;
 
         this.sessionStore.game.players[playerIndex].cards.push(card);
+        this.sessionStore.game.players[playerIndex].checklist.push(card);
         givenCards.push(card);
 
         if (playerIndex < this.sessionStore.game.qtdPlayers - 1) {

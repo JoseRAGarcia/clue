@@ -68,10 +68,6 @@ export default {
     };
   },
 
-  data: () => ({
-    outGameDialog: false,
-  }),
-
   computed: {
     menuComputed() {
       let menu = [];
