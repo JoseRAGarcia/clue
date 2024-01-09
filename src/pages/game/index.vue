@@ -1,7 +1,7 @@
 <template>
-  <q-page class="clue-page">
+  <q-page class="border-container">
     <div
-      class="options-bar fixed-top flex justify-end"
+      class="options-bar fixed-top flex justify-end z-max"
       :style="loaded && 'top: 0;'"
     >
       <div v-ripple class="options-bar-item">
@@ -42,7 +42,7 @@
 
         <template v-for="(player, j) in sessionStore.game.players" :key="j">
           <Player
-            :playerName="player.name"
+            :player="player"
             :floor="index"
             :playerPosition="getPlayerPosition(player)"
           />
@@ -270,7 +270,7 @@ export default defineComponent({
           }
         }
 
-        if (novo.id === antigo.id) return;
+        if (novo.id === antigo.id && novo.isNpc === antigo.isNpc) return;
 
         this.setPlayerFocus();
         if (this.isNpc && this.isOwner) {

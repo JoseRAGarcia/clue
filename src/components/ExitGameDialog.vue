@@ -49,10 +49,11 @@ export default defineComponent({
       this.layoutStore.exitGameDialog = false;
       this.layoutStore.rightDrawerOpen = false;
 
-      if (
-        this.sessionStore.game.ownerId === this.sessionStore.user.id ||
-        this.sessionStore.game.players.length === 1
-      ) {
+      const nonNpcPLayers = this.sessionStore.game.players.filter(
+        (p) => !p.isNpc
+      );
+
+      if (!nonNpcPLayers.length || nonNpcPLayers.length === 1) {
         this.layoutStore.loadingLayout = true;
         await this.firebaseStore
           .deleteGame(this.sessionStore.game.id)
@@ -67,7 +68,19 @@ export default defineComponent({
           );
 
         if (playerInGameIndex >= 0) {
-          this.sessionStore.game.players.splice(playerInGameIndex, 1);
+          this.sessionStore.game.players[playerInGameIndex].isNpc = true;
+
+          if (this.sessionStore.game.ownerId === this.sessionStore.user.id) {
+            const nonNpcPLayer = this.sessionStore.game.players.find(
+              (p) => !p.isNpc
+            );
+
+            if (nonNpcPLayer) {
+              this.sessionStore.game.ownerId =
+                nonNpcPLayer.userId.split('/user/')[1];
+            }
+          }
+
           this.firebaseStore.updateGame(this.sessionStore.game);
           this.firebaseStore.rtGame();
           this.sessionStore.cleanGame();

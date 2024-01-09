@@ -1,12 +1,12 @@
 <template>
   <q-page
-    class="clue-page shadow-21 row items-center justify-evenly q-pa-md"
+    class="container shadow-21 row items-center justify-evenly q-pa-md"
     style="display: flex; align-items: center; flex-wrap: wrap"
   >
     <div class="config-icon absolute-right q-pa-md">
       <div class="relative-position" v-ripple>
         <q-icon
-          class="spin cursor-pointer"
+          class="spin cursor-pointer clue-text-shadow"
           color="info"
           style="opacity: 0.5"
           name="settings"
@@ -122,7 +122,7 @@ export default defineComponent({
           options: {
             type: 'radio',
             model: this.sessionStore.game.qtdPlayers,
-            // inline: true
+            inline: true,
             items: [
               { label: '2', value: 2 },
               { label: '3', value: 3 },

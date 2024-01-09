@@ -2,8 +2,8 @@
   <q-avatar
     v-if="floor === playerPosition"
     class="player"
-    :id="playerName"
-    :style="`background: var(--${playerName}-color)`"
+    :id="player.name"
+    :style="`background: var(--${player.name}-color)`"
   >
     <div
       class="shadow-10"
@@ -16,7 +16,7 @@
     ></div>
     <q-badge
       v-if="
-        sessionStore.activePlayer.name === playerName &&
+        sessionStore.activePlayer.name === player.name &&
         sessionStore.game.diceValue &&
         !sessionStore.game.rollDice
       "
@@ -27,11 +27,12 @@
     >
       <div
         class="steps-left clue-text-shadow"
-        :style="`color: var(--${playerName}-color)`"
+        :style="`color: var(--${player.name}-color)`"
       >
         {{ sessionStore.game.diceValue }}
       </div>
     </q-badge>
+    <q-badge v-if="player.isNpc" floating> BOT </q-badge>
   </q-avatar>
 </template>
 
@@ -51,8 +52,8 @@ export default defineComponent({
   },
 
   props: {
-    playerName: {
-      type: String,
+    player: {
+      type: Object,
       required: true,
     },
     playerPosition: {
