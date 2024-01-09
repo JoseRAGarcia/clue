@@ -1,4 +1,3 @@
-import { characters } from './../fake-backend/index';
 export interface IUser {
   id: string;
   name: string;
