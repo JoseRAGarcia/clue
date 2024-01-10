@@ -78,6 +78,10 @@ module.exports = configure(function (/* ctx */) {
       // distDir
 
       // extendViteConf (viteConf) {},
+      extendViteConf(viteConf, { isServer, isClient }) {
+        viteConf.base = '/'
+      },
+
       // viteVuePluginOptions: {},
 
       vitePlugins: [

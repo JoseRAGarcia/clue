@@ -1,0 +1,8 @@
+{
+  "appId": "br.com.dehdo.clue",
+  "appName": "Clue",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
