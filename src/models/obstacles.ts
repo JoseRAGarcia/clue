@@ -1,3 +1,5 @@
+import { IDoor } from "."
+
 export const matrix = () => {
   const arr = []
   let i = 0
@@ -20,12 +22,6 @@ export const walls: number[] = [
   583, 584, 586, 562, 538, 537, 536, 512, 488, 440, 416, 418, 419, 420, 421, 423, 447, 495, 519, 543, 542, 541, 565, 589, 591, 592, 593, 569, 570, 546,
   522, 498, 474, 450, 452, 453, 454, 455, 106, 131, 132, 305, 475, 470, 446, 441, 465, 484, 364, 219, 197, 119, 192, 431
 ];
-
-interface IDoor {
-  door: number;
-  entry: number;
-  place: string;
-}
 
 export const doors: IDoor[] = [
   {

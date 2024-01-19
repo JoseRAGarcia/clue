@@ -145,11 +145,12 @@
   <CardsDialog />
   <ChecklistDialog />
   <PlaceDialog :isPlayer="isPlayer" />
+  <IndictmentDialog />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { matrix, walls, doors } from './obstacles';
+import { matrix, walls, doors } from 'src/models/obstacles';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
 import { useFirebaseStore } from 'stores/firebase';
@@ -159,6 +160,7 @@ import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
 import PlaceDialog from 'components/PlaceDialog.vue';
 import ChecklistDialog from 'components/ChecklistDialog.vue';
+import IndictmentDialog from 'components/IndictmentDialog.vue';
 
 import { IPlayer } from 'src/models';
 
@@ -183,6 +185,7 @@ export default defineComponent({
     CardsDialog,
     ChecklistDialog,
     PlaceDialog,
+    IndictmentDialog,
   },
 
   mounted() {
@@ -286,7 +289,7 @@ export default defineComponent({
       deep: true,
     },
 
-    'sessionStore.game.place.place': {
+    'sessionStore.game.indictment.place': {
       handler: function (novo) {
         if (novo) {
           this.layoutStore.placeDialog = true;
@@ -466,7 +469,7 @@ export default defineComponent({
 
     enterPlace(place: any) {
       this.sessionStore.game.diceValue = 0;
-      this.sessionStore.game.place.place = place.place;
+      this.sessionStore.game.indictment.place = place.place;
       console.log(`Entrou no ${place.place}`);
       // this.setNextPlayer();
     },

@@ -28,10 +28,16 @@ export interface ICard {
   category: string;
 }
 
-export interface IPlace {
+export interface IIndictment {
   indictment: boolean;
   character: string;
   weapon: string;
+  place: string;
+}
+
+export interface IDoor {
+  door: number;
+  entry: number;
   place: string;
 }
 
@@ -46,5 +52,5 @@ export interface IGame {
   rollDice: boolean;
   diceValue: number;
   status: string;
-  place: IPlace;
+  indictment: IIndictment;
 }

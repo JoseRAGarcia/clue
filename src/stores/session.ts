@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { IUser, IPlayer, IGame, ICharacter, ICard, IPlace } from "src/models";
+import { IUser, IPlayer, IGame, ICharacter, ICard, IIndictment } from "src/models";
 import { useFirebaseStore } from 'stores/firebase';
 
 export const useSessionStore = defineStore('session', {
@@ -23,7 +23,7 @@ export const useSessionStore = defineStore('session', {
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
-      place: {} as IPlace,
+      indictment: {} as IIndictment,
       status: "",
     } as IGame,
 
@@ -49,18 +49,19 @@ export const useSessionStore = defineStore('session', {
       const firebaseStore = useFirebaseStore();
 
       this.game = {
+        ...this.game,
         id: '',
         room: '',
         ownerId: '',
-        qtdPlayers: 6,
         players: [],
         targets: [],
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,
-        place: {} as IPlace,
+        indictment: {} as IIndictment,
         status: "",
       }
+
       this.playerSelected = {}
       this.user.gameId = ''
       firebaseStore.updateUser(this.user)

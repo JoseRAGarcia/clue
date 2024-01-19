@@ -10,7 +10,7 @@
   >
     <q-card
       class="q-dialog-plugin overflow-hidden"
-      :style="`background: url(img/places/${sessionStore.game.place.place}.jpg) no-repeat;
+      :style="`background: url(img/places/${sessionStore.game.indictment.place}.jpg) no-repeat;
   background-position: center; background-size: cover; width: 1200px !important;`"
     >
       <q-card-section class="q-dialog__title q-pa-none">
@@ -49,7 +49,12 @@
         >
           <div class="col">
             <div class="full-width column flex-center">
-              <q-btn style="width: 100%" color="primary" label="Acusar" />
+              <q-btn
+                style="width: 100%"
+                color="primary"
+                label="Acusar"
+                @click="setIndictment"
+              />
               <q-btn
                 flat
                 style="width: 100%"
@@ -77,7 +82,7 @@ import { defineComponent } from 'vue';
 import { useLayoutStore } from 'stores/layout';
 import { useSessionStore } from 'stores/session';
 import { useFirebaseStore } from 'stores/firebase';
-import { IPlace } from 'src/models';
+import { IIndictment } from 'src/models';
 
 export default defineComponent({
   name: 'PlaceDialogComponent',
@@ -114,7 +119,7 @@ export default defineComponent({
 
   computed: {
     placeNameComputed() {
-      switch (this.sessionStore.game.place.place) {
+      switch (this.sessionStore.game.indictment.place) {
         case 'biblioteca':
           return 'na Biblioteca';
         case 'cozinha':
@@ -140,17 +145,25 @@ export default defineComponent({
 
     indictmentReady() {
       return (
-        this.sessionStore.game.place.indictment &&
-        this.sessionStore.game.place.character &&
-        this.sessionStore.game.place.weapon
+        this.sessionStore.game.indictment.place &&
+        this.sessionStore.game.indictment.character &&
+        this.sessionStore.game.indictment.weapon
       );
     },
   },
 
   methods: {
     exitPlaceDialog() {
-      this.sessionStore.game.place = {} as IPlace;
+      this.sessionStore.game.indictment = {} as IIndictment;
       this.sessionStore.changeActivePlayer();
+    },
+
+    setIndictment() {
+      this.layoutStore.indictmentDialog = true;
+    },
+
+    accuse() {
+      console.log('accuse');
     },
   },
 });
