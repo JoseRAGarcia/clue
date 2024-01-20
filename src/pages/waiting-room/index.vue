@@ -261,6 +261,7 @@ export default defineComponent({
 
     async startGame() {
       this.sessionStore.game.status = 'started';
+      this.sessionStore.setAnswerPlayerId();
 
       this.layoutStore.loadingLayout = true;
       await this.firebaseStore.updateGame(this.sessionStore.game).then(() => {

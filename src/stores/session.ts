@@ -23,7 +23,15 @@ export const useSessionStore = defineStore('session', {
       activeIndex: 0,
       rollDice: false,
       diceValue: 0,
-      indictment: {} as IIndictment,
+      indictment: {
+        indictment: false,
+        indictmentMade: false,
+        character: '',
+        weapon: '',
+        place: '',
+        answerPlayerId: '',
+        answerCardName: '',
+      } as IIndictment,
       status: "",
     } as IGame,
 
@@ -43,6 +51,16 @@ export const useSessionStore = defineStore('session', {
       } else {
         this.game.activeIndex = 0
       }
+
+      this.setAnswerPlayerId()
+    },
+
+    setAnswerPlayerId() {
+      if (this.game.activeIndex + 1 < this.game.players.length) {
+        this.game.indictment.answerPlayerId = this.game.players[this.game.activeIndex + 1].id
+      } else {
+        this.game.indictment.answerPlayerId = this.game.players[0].id
+      }
     },
 
     cleanGame() {
@@ -58,7 +76,15 @@ export const useSessionStore = defineStore('session', {
         activeIndex: 0,
         rollDice: false,
         diceValue: 0,
-        indictment: {} as IIndictment,
+        indictment: {
+          indictment: false,
+          indictmentMade: false,
+          character: '',
+          weapon: '',
+          place: '',
+          answerPlayerId: '',
+          answerCardName: '',
+        } as IIndictment,
         status: "",
       }
 

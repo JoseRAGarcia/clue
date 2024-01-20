@@ -7,11 +7,15 @@
     <q-card class="q-dialog-plugin" style="width: 1200px !important">
       <q-card-section class="q-dialog__title"> Escolha {{}} </q-card-section>
       <q-card-section class="q-dialog__message">
-        <q-tabs no-caps>
+        <q-tabs
+          no-caps
+          indicator-color="transparent"
+          class="bg-light border-ccc"
+        >
           <q-tab
             style="height: 250px"
             v-for="card in sessionStore.cards.filter(
-              (c) => c.category === 'character'
+              (c) => c.category === indictmentCategory
             )"
             :key="card.id"
             :name="card.name"
@@ -21,7 +25,8 @@
               class="indictment-card"
               :class="{
                 'card-selected shadow-21':
-                  sessionStore.game.indictment[card.category] === card.name,
+                  sessionStore.game.indictment[indictmentCategory] ===
+                  card.name,
               }"
             >
               <q-img
@@ -56,6 +61,13 @@ export default defineComponent({
     };
   },
 
+  props: {
+    indictmentCategory: {
+      type: String,
+      required: true,
+    },
+  },
+
   computed: {
     myPlayer() {
       return this.sessionStore.game.players.find(
@@ -66,14 +78,15 @@ export default defineComponent({
 
   methods: {
     setCardIndictment(card: ICard) {
-      switch (card.category) {
-        case 'character':
-          this.sessionStore.game.indictment.character = card.name;
-          break;
+      switch (this.indictmentCategory) {
         case 'weapon':
           this.sessionStore.game.indictment.weapon = card.name;
           break;
+        case 'character':
+          this.sessionStore.game.indictment.character = card.name;
+          break;
       }
+      this.layoutStore.indictmentDialog = false;
     },
   },
 });
@@ -93,5 +106,6 @@ export default defineComponent({
   pointer-events: none;
   touch-action: none;
   outline: 3px solid var(--q-primary);
+  border-radius: 5px;
 }
 </style>

@@ -30,9 +30,12 @@ export interface ICard {
 
 export interface IIndictment {
   indictment: boolean;
+  indictmentMade: boolean;
   character: string;
   weapon: string;
   place: string;
+  answerPlayerId: string;
+  answerCardName: string;
 }
 
 export interface IDoor {

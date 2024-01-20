@@ -145,7 +145,6 @@
   <CardsDialog />
   <ChecklistDialog />
   <PlaceDialog :isPlayer="isPlayer" />
-  <IndictmentDialog />
 </template>
 
 <script lang="ts">
@@ -160,7 +159,6 @@ import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
 import PlaceDialog from 'components/PlaceDialog.vue';
 import ChecklistDialog from 'components/ChecklistDialog.vue';
-import IndictmentDialog from 'components/IndictmentDialog.vue';
 
 import { IPlayer } from 'src/models';
 
@@ -185,7 +183,6 @@ export default defineComponent({
     CardsDialog,
     ChecklistDialog,
     PlaceDialog,
-    IndictmentDialog,
   },
 
   mounted() {

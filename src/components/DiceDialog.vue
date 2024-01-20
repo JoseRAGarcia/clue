@@ -7,7 +7,7 @@
     full-width
     style="z-index: 999"
   >
-    <component :is="Dice" />
+    <Component :is="Dice" />
   </q-dialog>
 </template>
 
