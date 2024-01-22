@@ -36,6 +36,7 @@ export interface IIndictment {
   place: string;
   answerPlayerId: string;
   answerCardName: string;
+  answersList: string[];
 }
 
 export interface IDoor {
@@ -56,4 +57,5 @@ export interface IGame {
   diceValue: number;
   status: string;
   indictment: IIndictment;
+  winnerId: string;
 }

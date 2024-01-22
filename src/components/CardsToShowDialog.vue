@@ -1,27 +1,21 @@
 <template>
   <q-dialog
-    v-model="layoutStore.indictmentDialog"
+    v-model="layoutStore.cardsToShowDialog"
     transition-show="scale"
     transition-hide="scale"
   >
     <q-card class="q-dialog-plugin" style="width: 1200px !important">
       <q-card-section class="q-dialog__title">
-        Escolha {{ categoryComputed }}
+        Escolha uma Carta para Mostrar
       </q-card-section>
       <q-card-section class="q-dialog__message">
         <div class="indictment-container">
           <div
             class="indictment-card cursor-pointer relative-position"
-            :class="{
-              'card-selected shadow-21':
-                sessionStore.game.indictment[indictmentCategory] === card.name,
-            }"
-            v-for="card in sessionStore.cards.filter(
-              (c) => c.category === indictmentCategory
-            )"
+            v-for="card in cardsToShow"
             :key="card.id"
             v-ripple
-            @click="setCardIndictment(card)"
+            @click="setShowCard(card)"
           >
             <q-img
               height="100%"
@@ -42,7 +36,7 @@ import { useSessionStore } from 'stores/session';
 import { ICard } from 'src/models';
 
 export default defineComponent({
-  name: 'IndictmentDialogComponent',
+  name: 'CardsToShowDialogComponent',
 
   setup() {
     const layoutStore = useLayoutStore();
@@ -55,42 +49,17 @@ export default defineComponent({
   },
 
   props: {
-    indictmentCategory: {
-      type: String,
+    cardsToShow: {
+      type: Array,
       required: true,
     },
-  },
-
-  computed: {
-    myPlayer() {
-      return this.sessionStore.game.players.find(
-        (p) => p.id === this.sessionStore.playerSelected.id
-      );
-    },
-
-    categoryComputed() {
-      switch (this.indictmentCategory) {
-        case 'weapon':
-          return 'a Arma';
-        case 'character':
-          return 'o Assassino';
-        default:
-          return '';
-      }
-    },
+    showCard: Function,
   },
 
   methods: {
-    setCardIndictment(card: ICard) {
-      switch (this.indictmentCategory) {
-        case 'weapon':
-          this.sessionStore.game.indictment.weapon = card.name;
-          break;
-        case 'character':
-          this.sessionStore.game.indictment.character = card.name;
-          break;
-      }
-      this.layoutStore.indictmentDialog = false;
+    setShowCard(card: ICard) {
+      this.showCard && this.showCard(card);
+      this.layoutStore.cardsToShowDialog = false;
     },
   },
 });
@@ -111,12 +80,5 @@ export default defineComponent({
   height: 128px;
   opacity: 1;
   transition: all 0.3s;
-}
-
-.card-selected {
-  transform: scale(115%);
-  z-index: 1;
-  pointer-events: none;
-  touch-action: none;
 }
 </style>

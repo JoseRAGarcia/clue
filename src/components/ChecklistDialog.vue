@@ -105,7 +105,6 @@
                   checked-icon="help"
                   unchecked-icon="help_outline"
                   v-model="checklist.suspicious"
-                  :toogle="setSuspicious(checklist)"
                 />
               </span>
             </div>

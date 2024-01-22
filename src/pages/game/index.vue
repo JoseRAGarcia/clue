@@ -144,7 +144,8 @@
   <DiceDialog />
   <CardsDialog />
   <ChecklistDialog />
-  <PlaceDialog :isPlayer="isPlayer" />
+  <PlaceDialog :isPlayer="isPlayer" :isOwner="isOwner" />
+  <VictoryDialog />
 </template>
 
 <script lang="ts">
@@ -159,6 +160,7 @@ import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
 import PlaceDialog from 'components/PlaceDialog.vue';
 import ChecklistDialog from 'components/ChecklistDialog.vue';
+import VictoryDialog from 'components/VictoryDialog.vue';
 
 import { IPlayer } from 'src/models';
 
@@ -183,6 +185,7 @@ export default defineComponent({
     CardsDialog,
     ChecklistDialog,
     PlaceDialog,
+    VictoryDialog,
   },
 
   mounted() {
@@ -294,6 +297,22 @@ export default defineComponent({
           this.layoutStore.placeDialog = false;
         }
       },
+    },
+
+    'sessionStore.game.winnerId': function (novo) {
+      if (novo) {
+        setTimeout(() => {
+          this.layoutStore.victoryDialog = true;
+        }, 2000);
+      }
+    },
+
+    'sessionStore.game.status': function (novo) {
+      if (novo === 'finished') {
+        this.sessionStore.user.gameId = '';
+        this.sessionStore.cleanGame();
+        this.$router.push({ name: 'home' });
+      }
     },
   },
 

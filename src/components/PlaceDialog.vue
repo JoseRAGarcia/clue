@@ -24,7 +24,7 @@
           <div class="col col-12 col-sm-6 flex items-center">
             <div
               v-if="loaded"
-              class="talk-balloon full-width q-pa-sm q-mt-md column"
+              class="talk-balloon full-width q-pa-sm q-mt-md column text-no-wrap"
             >
               <q-spinner-dots
                 v-if="!sessionStore.game.indictment.indictment"
@@ -100,6 +100,15 @@
                     />
                   </span>
                 </div>
+                <ul class="answers-list text-size">
+                  <li
+                    v-for="(answer, index) in sessionStore.game.indictment
+                      .answersList"
+                    :key="index"
+                  >
+                    {{ answer }}
+                  </li>
+                </ul>
               </div>
               <div
                 v-if="indictmentReady"
@@ -112,13 +121,13 @@
                     style="width: 100%"
                     color="primary"
                     label="Finalizar Acusação"
-                    @click="sessionStore.game.indictment.indictmentMade = true"
+                    @click="finishIndictment(sessionStore.activePlayer.id)"
                   />
                   <div v-else-if="!sessionStore.game.indictment.answerCardName">
                     <span
                       >Aguardando
                       <span class="text-primary text-bold text-capitalize">{{
-                        answerPlayer.name
+                        answerPlayer?.name
                       }}</span>
                       responder</span
                     >
@@ -126,6 +135,44 @@
                       color="primary"
                       size="1em"
                       class="q-ma-sm"
+                    />
+                  </div>
+                  <div v-else-if="ownCard">
+                    <div>
+                      Ninguém apresentou nenhuma carta, mas você possui, pelo
+                      menos, uma das cartas que você usou na acusação!
+                    </div>
+                    <q-btn
+                      style="width: 100%"
+                      class="q-mt-sm"
+                      color="primary"
+                      label="OK"
+                      @click="exitPlaceDialog"
+                    />
+                  </div>
+                  <div v-else>
+                    <div>
+                      <span class="text-primary text-bold text-capitalize">{{
+                        answerPlayer?.name
+                      }}</span>
+                      apresentou a seguinte carta:
+                    </div>
+                    <div class="full-width bg-light q-pa-sm flex flex-center">
+                      <div class="indictment-card relative-position">
+                        <q-img
+                          height="100%"
+                          width="100%"
+                          :src="`img/cards/${sessionStore.game.indictment.answerCardName}.jpg`"
+                        ></q-img>
+                      </div>
+                    </div>
+
+                    <q-btn
+                      style="width: 100%"
+                      class="q-mt-sm"
+                      color="primary"
+                      label="OK"
+                      @click="exitPlaceDialog"
                     />
                   </div>
                 </template>
@@ -139,24 +186,43 @@
                       finalizar acusação</span
                     >
                   </div>
-                  <div
-                    v-else-if="
-                      answerPlayer.id === sessionStore.playerSelected.id
-                    "
-                  >
-                    <q-btn
-                      style="width: 100%"
+                  <div v-else-if="checkingCards">
+                    <span
+                      v-if="answerPlayer.id === sessionStore.playerSelected.id"
+                      >Checando as suas cartas...</span
+                    >
+                    <span v-else>
+                      <span class="text-primary text-bold text-capitalize">{{
+                        answerPlayer?.name
+                      }}</span>
+                      está checando as suas cartas...</span
+                    >
+                    <q-spinner-hourglass
                       color="primary"
-                      label="Mostrar Carta"
+                      size="1em"
+                      class="q-ma-sm"
                     />
                   </div>
                   <div v-else-if="!sessionStore.game.indictment.answerCardName">
                     <span
                       >Aguardando
                       <span class="text-primary text-bold text-capitalize">{{
-                        answerPlayer.name
+                        answerPlayer?.name
                       }}</span>
                       responder</span
+                    >
+                    <q-spinner-hourglass
+                      color="primary"
+                      size="1em"
+                      class="q-ma-sm"
+                    />
+                  </div>
+                  <div v-else>
+                    <span
+                      >Aguardando a ação de
+                      <span class="text-primary text-bold text-capitalize">{{
+                        sessionStore.activePlayer.name
+                      }}</span></span
                     >
                     <q-spinner-hourglass
                       color="primary"
@@ -178,17 +244,18 @@
           <div class="col">
             <div class="full-width column flex-center">
               <q-btn
+                v-if="!sessionStore.game.indictment.indictment"
                 style="width: 100%"
                 color="primary"
                 label="Acusar"
-                @click="sessionStore.game.indictment.indictment = true"
+                @click="initIndictment"
               />
               <q-btn
                 style="width: 100%"
                 class="q-mt-sm shadow-21 clue-text-muted"
                 color="white"
                 label="Sair"
-                @click="this.exitPlaceDialog"
+                @click="exitPlaceDialog"
               />
             </div>
           </div>
@@ -205,6 +272,11 @@
       :is="IndictmentDialog"
       :indictmentCategory="indictmentCategory"
     />
+    <Component
+      :is="CardsToShowDialog"
+      :cardsToShow="cardsToShow"
+      :showCard="showCard"
+    />
   </q-dialog>
 </template>
 
@@ -213,7 +285,7 @@ import { defineComponent, defineAsyncComponent } from 'vue';
 import { useLayoutStore } from 'stores/layout';
 import { useSessionStore } from 'stores/session';
 import { useFirebaseStore } from 'stores/firebase';
-import { IIndictment } from 'src/models';
+import { ICard, IIndictment } from 'src/models';
 
 export default defineComponent({
   name: 'PlaceDialogComponent',
@@ -225,23 +297,31 @@ export default defineComponent({
     const IndictmentDialog = defineAsyncComponent(
       () => import('components/IndictmentDialog.vue')
     );
+    const CardsToShowDialog = defineAsyncComponent(
+      () => import('components/CardsToShowDialog.vue')
+    );
 
     return {
       layoutStore,
       sessionStore,
       firebaseStore,
       IndictmentDialog,
+      CardsToShowDialog,
     };
   },
 
   props: {
     isPlayer: Boolean,
+    isOwner: Boolean,
   },
 
   data() {
     return {
       loaded: false,
       indictmentCategory: 'weapon',
+      checkingCards: false,
+      ownCard: false,
+      cardsToShow: [] as ICard[],
     };
   },
 
@@ -249,7 +329,23 @@ export default defineComponent({
     'layoutStore.placeDialog': function (novo) {
       setTimeout(() => {
         this.loaded = novo;
+
+        if (novo) {
+          setTimeout(() => {
+            this.checkNpc();
+          }, 1000);
+        }
       }, 1000);
+    },
+
+    'sessionStore.game.indictment.answerPlayerId': function (novo) {
+      if (
+        (this.answerPlayer?.isNpc ||
+          novo === this.sessionStore.playerSelected.id) &&
+        !this.sessionStore.game.indictment.answerCardName
+      ) {
+        this.checkCards();
+      }
     },
   },
 
@@ -314,14 +410,150 @@ export default defineComponent({
   },
 
   methods: {
+    checkNpc() {
+      if (!this.sessionStore.activePlayer.isNpc || !this.isOwner) return;
+
+      this.initIndictment();
+
+      const characters: ICard[] = [];
+      const weapons: ICard[] = [];
+
+      this.sessionStore.cards.forEach((card) => {
+        if (
+          card.category === 'character' &&
+          this.sessionStore.activePlayer.checklist.every(
+            (c) => c.id !== card.id
+          )
+        ) {
+          characters.push(card);
+        }
+        if (
+          card.category === 'weapon' &&
+          this.sessionStore.activePlayer.checklist.every(
+            (c) => c.id !== card.id
+          )
+        ) {
+          weapons.push(card);
+        }
+      });
+
+      setTimeout(() => {
+        const weaponRandomIndex = Math.floor(Math.random() * weapons.length);
+        this.sessionStore.game.indictment.weapon =
+          weapons[weaponRandomIndex]?.name;
+
+        setTimeout(() => {
+          const characterRandomIndex = Math.floor(
+            Math.random() * characters.length
+          );
+          this.sessionStore.game.indictment.character =
+            characters[characterRandomIndex]?.name;
+
+          setTimeout(() => {
+            this.finishIndictment(this.sessionStore.activePlayer.id);
+          }, 2000);
+        }, 2000);
+      }, 2000);
+    },
+
     exitPlaceDialog() {
       this.sessionStore.game.indictment = {} as IIndictment;
       this.sessionStore.changeActivePlayer();
     },
 
+    initIndictment() {
+      this.sessionStore.game.indictment.indictment = true;
+      this.sessionStore.game.indictment.indictmentMade = false;
+      this.sessionStore.game.indictment.character = '';
+      this.sessionStore.game.indictment.weapon = '';
+      this.sessionStore.game.indictment.answerPlayerId = '';
+      this.sessionStore.game.indictment.answerCardName = '';
+      this.sessionStore.game.indictment.answersList = [];
+    },
+
     setIndictment(category: string) {
       this.indictmentCategory = category;
       this.layoutStore.indictmentDialog = true;
+    },
+
+    finishIndictment(playerId: string) {
+      this.sessionStore.game.indictment.indictmentMade = true;
+      this.sessionStore.setAnswerPlayerId(playerId);
+    },
+
+    checkCards() {
+      this.cardsToShow = [];
+      const player = this.answerPlayer;
+
+      if (player) {
+        if (player.isNpc && !this.isOwner) return;
+
+        player.cards.forEach((card) => {
+          if (
+            card.name === this.sessionStore.game.indictment.place ||
+            card.name === this.sessionStore.game.indictment.weapon ||
+            card.name === this.sessionStore.game.indictment.character
+          ) {
+            this.cardsToShow.push(card);
+          }
+        });
+
+        this.checkingCards = true;
+        setTimeout(() => {
+          if (!this.cardsToShow.length) {
+            if (player.id === this.sessionStore.activePlayer.id) {
+              this.sessionStore.game.indictment.answersList.push(
+                `${
+                  player.name.charAt(0).toUpperCase() + player.name.slice(1)
+                } venceu a partida!`
+              );
+              this.sessionStore.game.winnerId = player.id;
+            } else {
+              this.sessionStore.game.indictment.answersList.push(
+                `${
+                  player.name.charAt(0).toUpperCase() + player.name.slice(1)
+                } não tem nada a dizer!`
+              );
+              this.sessionStore.setAnswerPlayerId(player.id);
+            }
+          } else if (player.isNpc || this.cardsToShow.length === 1) {
+            if (player.id === this.sessionStore.activePlayer.id) {
+              this.ownCard = true;
+            } else {
+              this.sessionStore.game.indictment.answersList.push(
+                `${
+                  player.name.charAt(0).toUpperCase() + player.name.slice(1)
+                } mostrou uma carta!`
+              );
+              this.showCard(this.cardsToShow[0]);
+            }
+          } else {
+            if (player.id === this.sessionStore.activePlayer.id) {
+              this.ownCard = true;
+            } else {
+              this.layoutStore.cardsToShowDialog = true;
+            }
+          }
+          this.checkingCards = false;
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          this.checkingCards = false;
+        }, 3000);
+      }
+    },
+
+    showCard(card: ICard) {
+      if (this.answerPlayer?.isNpc && !this.isOwner) return;
+
+      this.sessionStore.game.indictment.answerCardName = card.name;
+      this.sessionStore.activePlayer.checklist.push(card);
+
+      if (this.sessionStore.activePlayer.isNpc) {
+        setTimeout(() => {
+          this.exitPlaceDialog();
+        }, 2000);
+      }
     },
   },
 });
@@ -333,7 +565,7 @@ export default defineComponent({
   height: 100%;
   position: absolute;
   bottom: 50px;
-  left: -80%;
+  left: -90%;
   transition: left 0.8s;
   pointer-events: none;
   touch-action: none;
@@ -355,5 +587,13 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+  z-index: 1;
+}
+
+.indictment-card {
+  width: 91px;
+  height: 128px;
+  opacity: 1;
+  transition: all 0.3s;
 }
 </style>

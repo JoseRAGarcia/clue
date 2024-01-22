@@ -31,8 +31,10 @@ export const useSessionStore = defineStore('session', {
         place: '',
         answerPlayerId: '',
         answerCardName: '',
+        answersList: []
       } as IIndictment,
       status: "",
+      winnerId: '',
     } as IGame,
 
     playerSelected: {} as IPlayer | any,
@@ -51,15 +53,16 @@ export const useSessionStore = defineStore('session', {
       } else {
         this.game.activeIndex = 0
       }
-
-      this.setAnswerPlayerId()
     },
 
-    setAnswerPlayerId() {
-      if (this.game.activeIndex + 1 < this.game.players.length) {
-        this.game.indictment.answerPlayerId = this.game.players[this.game.activeIndex + 1].id
-      } else {
-        this.game.indictment.answerPlayerId = this.game.players[0].id
+    setAnswerPlayerId(playerId: string) {
+      const playerIndex = this.game.players.findIndex(p => p.id === playerId)
+      if (playerIndex >= 0) {
+        if (playerIndex + 1 < this.game.players.length) {
+          this.game.indictment.answerPlayerId = this.game.players[playerIndex + 1].id
+        } else {
+          this.game.indictment.answerPlayerId = this.game.players[0].id
+        }
       }
     },
 
@@ -84,8 +87,10 @@ export const useSessionStore = defineStore('session', {
           place: '',
           answerPlayerId: '',
           answerCardName: '',
+          answersList: []
         } as IIndictment,
         status: "",
+        winnerId: '',
       }
 
       this.playerSelected = {}
