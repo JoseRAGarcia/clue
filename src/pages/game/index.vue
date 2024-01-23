@@ -144,12 +144,13 @@
   <DiceDialog />
   <CardsDialog />
   <ChecklistDialog />
-  <PlaceDialog :isPlayer="isPlayer" />
+  <PlaceDialog :isPlayer="isPlayer" :isOwner="isOwner" />
+  <VictoryDialog />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { matrix, walls, doors } from './obstacles';
+import { matrix, walls, doors } from 'src/models/obstacles';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
 import { useFirebaseStore } from 'stores/firebase';
@@ -159,6 +160,7 @@ import DiceDialog from 'components/DiceDialog.vue';
 import CardsDialog from 'components/CardsDialog.vue';
 import PlaceDialog from 'components/PlaceDialog.vue';
 import ChecklistDialog from 'components/ChecklistDialog.vue';
+import VictoryDialog from 'components/VictoryDialog.vue';
 
 import { IPlayer } from 'src/models';
 
@@ -183,6 +185,7 @@ export default defineComponent({
     CardsDialog,
     ChecklistDialog,
     PlaceDialog,
+    VictoryDialog,
   },
 
   mounted() {
@@ -286,7 +289,7 @@ export default defineComponent({
       deep: true,
     },
 
-    'sessionStore.game.place.place': {
+    'sessionStore.game.indictment.place': {
       handler: function (novo) {
         if (novo) {
           this.layoutStore.placeDialog = true;
@@ -294,6 +297,22 @@ export default defineComponent({
           this.layoutStore.placeDialog = false;
         }
       },
+    },
+
+    'sessionStore.game.winnerId': function (novo) {
+      if (novo) {
+        setTimeout(() => {
+          this.layoutStore.victoryDialog = true;
+        }, 2000);
+      }
+    },
+
+    'sessionStore.game.status': function (novo) {
+      if (novo === 'finished') {
+        this.sessionStore.user.gameId = '';
+        this.sessionStore.cleanGame();
+        this.$router.push({ name: 'home' });
+      }
     },
   },
 
@@ -466,7 +485,7 @@ export default defineComponent({
 
     enterPlace(place: any) {
       this.sessionStore.game.diceValue = 0;
-      this.sessionStore.game.place.place = place.place;
+      this.sessionStore.game.indictment.place = place.place;
       console.log(`Entrou no ${place.place}`);
       // this.setNextPlayer();
     },
@@ -553,10 +572,18 @@ export default defineComponent({
       let destination: any = null;
 
       coordDoors.forEach((door) => {
-        if (!destination || door.distance < destination.distance) {
+        const isChecklistDoor = this.sessionStore.activePlayer.checklist.some(
+          (c) => c.name === door.place
+        );
+        if (
+          !isChecklistDoor &&
+          (!destination || door.distance < destination.distance)
+        ) {
           destination = door;
         }
       });
+
+      console.log('destination', destination.place);
 
       const coordDirections = [
         {
@@ -605,13 +632,23 @@ export default defineComponent({
       const isInsidePlace = coordDoors.find(
         (door) => door.door === playerPosition
       );
+      const isOnEntry = coordDoors.find(
+        (door) => door.door === this.lastPosition
+      );
       if (isInsidePlace) {
         const nextStep = coordDirections.find(
           (dir) => dir.position === isInsidePlace.entry
         );
         direction = nextStep;
       } else {
+        if (isOnEntry) {
+          this.lastPosition = 0;
+        }
+
         coordDirections.forEach((dir) => {
+          const possibleDoor = this.doors.find((d) => d.door === dir.position);
+          if (possibleDoor && possibleDoor.door !== destination.door) return;
+
           if (
             this.checkObstacle(dir.position) &&
             dir.position !== this.lastPosition

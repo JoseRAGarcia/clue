@@ -28,10 +28,25 @@ export interface ICard {
   category: string;
 }
 
-export interface IPlace {
+export interface IAnswer {
+  answered: boolean;
+  text: string;
+}
+
+export interface IIndictment {
   indictment: boolean;
+  indictmentMade: boolean;
   character: string;
   weapon: string;
+  place: string;
+  answerPlayerId: string;
+  answerCardName: string;
+  answersList: IAnswer[];
+}
+
+export interface IDoor {
+  door: number;
+  entry: number;
   place: string;
 }
 
@@ -46,5 +61,6 @@ export interface IGame {
   rollDice: boolean;
   diceValue: number;
   status: string;
-  place: IPlace;
+  indictment: IIndictment;
+  winnerId: string;
 }

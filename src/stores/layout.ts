@@ -9,6 +9,9 @@ export const useLayoutStore = defineStore('layout', {
     cardsDialog: false,
     checklistDialog: false,
     placeDialog: false,
+    indictmentDialog: false,
+    cardsToShowDialog: false,
+    victoryDialog: false,
   }),
 
   getters: {

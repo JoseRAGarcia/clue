@@ -2,7 +2,7 @@ import { IPlayer } from ".";
 import { useSessionStore } from 'stores/session';
 import { useQuasar } from 'quasar';
 import { useRoute } from 'vue-router';
-import { matrix, walls, doors } from './obstacles';
+import { matrix, walls, doors } from 'src/models/obstacles';
 
 export default class Player {
   private lastDirection: string = 'up';
