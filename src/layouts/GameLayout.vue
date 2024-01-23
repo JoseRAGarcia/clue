@@ -13,7 +13,7 @@
       }`"
       @click="toggleRightDrawer"
     /> -->
-    <MainMenu />
+    <!-- <MainMenu /> -->
     <q-page-container class="clue-container">
       <router-view />
     </q-page-container>
@@ -24,7 +24,7 @@
 import { defineComponent } from 'vue';
 import { useLayoutStore } from 'stores/layout';
 
-import MainMenu from 'components/MainMenu.vue';
+//import MainMenu from 'components/MainMenu.vue';
 
 export default defineComponent({
   name: 'GameLayout',
@@ -41,7 +41,7 @@ export default defineComponent({
   },
 
   components: {
-    MainMenu,
+    //MainMenu,
   },
 });
 </script>

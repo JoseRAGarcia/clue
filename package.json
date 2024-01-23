@@ -10,9 +10,15 @@
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build"
+    "build": "quasar build",
+    "android:dev": "quasar dev -m capacitor -T android",
+    "android:build": "quasar build -m capacitor -T android",
+    "ios:dev": "quasar dev -m capacitor -T ios",
+    "ios:build": "quasar build -m capacitor -T ios"
   },
   "dependencies": {
+    "@capacitor-community/keep-awake": "^4.0.0",
+    "@capacitor/status-bar": "^5.0.6",
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
     "firebase": "^10.5.0",

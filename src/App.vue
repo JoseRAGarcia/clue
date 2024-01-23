@@ -17,8 +17,10 @@ import { defineComponent, ref } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
 import { useFirebaseStore } from 'stores/firebase';
+import { usekeepAwakeStore } from 'stores/keepAwake';
 import { v4 as uuidv4 } from 'uuid';
 import { IUser } from './models';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 export default defineComponent({
   name: 'App',
@@ -27,6 +29,7 @@ export default defineComponent({
     const sessionStore = useSessionStore();
     const layoutStore = useLayoutStore();
     const firebaseStore = useFirebaseStore();
+    const keepAwakeStore = usekeepAwakeStore();
 
     const userReady = ref(false);
 
@@ -35,6 +38,7 @@ export default defineComponent({
       layoutStore,
       userReady,
       firebaseStore,
+      keepAwakeStore,
     };
   },
 
@@ -43,6 +47,19 @@ export default defineComponent({
   },
 
   async mounted() {
+    if (this.$q.platform.is.capacitor && this.$q.platform.is.android) {
+      await StatusBar.setStyle({
+        style: Style.Dark,
+      });
+      await StatusBar.hide();
+      await StatusBar.setOverlaysWebView({ overlay: true });
+    }
+
+    const isSupported = await this.keepAwakeStore.isSupported();
+    if (isSupported) {
+      this.keepAwakeStore.keepAwake();
+    }
+
     await this.firebaseStore.getCards().then((response) => {
       this.sessionStore.cards = Array.from(response);
     });

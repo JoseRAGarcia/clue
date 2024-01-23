@@ -1,0 +1,15 @@
+{
+  "name": "clue",
+  "version": "0.0.1",
+  "description": "Clue application",
+  "author": "dehdo.softwares@gmail.com",
+  "private": true,
+  "dependencies": {
+    "@capacitor-community/keep-awake": "^4.0.0",
+    "@capacitor/android": "^5.6.0",
+    "@capacitor/app": "^5.0.0",
+    "@capacitor/cli": "^5.0.0",
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/status-bar": "^5.0.6"
+  }
+}

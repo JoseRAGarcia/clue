@@ -1,5 +1,5 @@
 // @ts-nocheck
-
+import { Platform } from 'quasar'
 import { defineStore } from 'pinia';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from "firebase/analytics";
@@ -52,7 +52,7 @@ export const useFirebaseStore = defineStore('firebase', {
     },
 
     initFirestore() {
-      if (location.hostname === 'localhost') {
+      if (location.hostname === 'localhost' && !Platform.is.capacitor) {
         this.db = getFirestore();
         connectFirestoreEmulator(this.db, 'localhost', 8080)
 
