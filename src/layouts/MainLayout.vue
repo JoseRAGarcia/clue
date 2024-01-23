@@ -1,9 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-page-container
-      class="clue-container"
-      :class="{ 'q-pt-lg': $q.platform.is.capacitor && $q.platform.is.android }"
-    >
+    <q-page-container class="clue-container">
       <router-view />
     </q-page-container>
   </q-layout>
