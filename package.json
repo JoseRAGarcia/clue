@@ -19,6 +19,7 @@
   "dependencies": {
     "@capacitor-community/keep-awake": "^4.0.0",
     "@capacitor/status-bar": "^5.0.6",
+    "@hugotomazi/capacitor-navigation-bar": "^2.0.1",
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
     "firebase": "^10.5.0",

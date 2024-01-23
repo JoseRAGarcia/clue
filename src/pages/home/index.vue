@@ -3,10 +3,7 @@
     class="container shadow-21 row items-center justify-evenly q-pa-md"
     style="display: flex; align-items: center; flex-wrap: wrap"
   >
-    <div
-      class="config-icon absolute-right q-pa-md"
-      :class="{ 'q-mt-lg': $q.platform.is.capacitor && $q.platform.is.android }"
-    >
+    <div class="config-icon absolute-right q-pa-md">
       <div class="relative-position" v-ripple>
         <q-icon
           class="spin cursor-pointer clue-text-shadow"

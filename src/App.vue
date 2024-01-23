@@ -21,6 +21,10 @@ import { usekeepAwakeStore } from 'stores/keepAwake';
 import { v4 as uuidv4 } from 'uuid';
 import { IUser } from './models';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import {
+  NavigationBar,
+  NavigationBarPluginEvents,
+} from '@hugotomazi/capacitor-navigation-bar';
 
 export default defineComponent({
   name: 'App',
@@ -51,8 +55,18 @@ export default defineComponent({
       await StatusBar.setStyle({
         style: Style.Dark,
       });
-      await StatusBar.hide();
-      await StatusBar.setOverlaysWebView({ overlay: true });
+      await StatusBar.setBackgroundColor({ color: '#26a69a' });
+      await NavigationBar.setColor({ color: '#26a69a' });
+      //await StatusBar.hide();
+      // await StatusBar.setOverlaysWebView({ overlay: true });
+      // await NavigationBar.hide();
+      // await NavigationBar.setTransparency({ isTransparent: true });
+
+      // NavigationBar.addListener(NavigationBarPluginEvents.SHOW, () => {
+      //   setTimeout(async () => {
+      //     await NavigationBar.hide();
+      //   }, 3000);
+      // });
     }
 
     const isSupported = await this.keepAwakeStore.isSupported();
