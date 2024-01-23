@@ -5,7 +5,15 @@
     transition-hide="scale"
   >
     <q-card class="q-dialog-plugin">
-      <q-card-section class="q-dialog__title">Checklist</q-card-section>
+      <q-card-section class="q-dialog__title flex justify-between"
+        >Checklist
+        <q-icon
+          v-ripple
+          class="relative-position cursor-pointer"
+          name="close"
+          @click="layoutStore.checklistDialog = false"
+        />
+      </q-card-section>
       <q-card-section class="q-dialog__message">
         <div class="characters-container">
           <div class="text-h6 text-primary">Personagens</div>

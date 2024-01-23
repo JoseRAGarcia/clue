@@ -4,8 +4,16 @@
     transition-show="scale"
     transition-hide="scale"
   >
-    <q-card class="q-dialog-plugin" style="width: 1200px !important">
-      <q-card-section class="q-dialog__title">Suas Cartas</q-card-section>
+    <q-card class="q-dialog-plugin">
+      <q-card-section class="q-dialog__title flex justify-between"
+        >Suas Cartas
+        <q-icon
+          v-ripple
+          class="relative-position cursor-pointer"
+          name="close"
+          @click="layoutStore.cardsDialog = false"
+        />
+      </q-card-section>
       <q-card-section class="q-dialog__message">
         <div class="characters-container">
           <div

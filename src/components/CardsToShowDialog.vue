@@ -3,10 +3,12 @@
     v-model="layoutStore.cardsToShowDialog"
     transition-show="scale"
     transition-hide="scale"
+    persistent
   >
-    <q-card class="q-dialog-plugin" style="width: 1200px !important">
-      <q-card-section class="q-dialog__title">
+    <q-card class="q-dialog-plugin">
+      <q-card-section class="q-dialog__title flex justify-between">
         Escolha uma Carta para Mostrar
+        <span class="text-primary">{{ timer }}</span>
       </q-card-section>
       <q-card-section class="q-dialog__message">
         <div class="indictment-container">
@@ -30,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useLayoutStore } from 'stores/layout';
 import { useSessionStore } from 'stores/session';
 import { ICard } from 'src/models';
@@ -41,10 +43,12 @@ export default defineComponent({
   setup() {
     const layoutStore = useLayoutStore();
     const sessionStore = useSessionStore();
+    const timer = ref(10);
 
     return {
       layoutStore,
       sessionStore,
+      timer,
     };
   },
 

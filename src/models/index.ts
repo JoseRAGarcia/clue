@@ -28,6 +28,11 @@ export interface ICard {
   category: string;
 }
 
+export interface IAnswer {
+  answered: boolean;
+  text: string;
+}
+
 export interface IIndictment {
   indictment: boolean;
   indictmentMade: boolean;
@@ -36,7 +41,7 @@ export interface IIndictment {
   place: string;
   answerPlayerId: string;
   answerCardName: string;
-  answersList: string[];
+  answersList: IAnswer[];
 }
 
 export interface IDoor {

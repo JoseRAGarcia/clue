@@ -4,9 +4,15 @@
     transition-show="scale"
     transition-hide="scale"
   >
-    <q-card class="q-dialog-plugin" style="width: 1200px !important">
-      <q-card-section class="q-dialog__title">
-        Escolha {{ categoryComputed }}
+    <q-card class="q-dialog-plugin">
+      <q-card-section class="q-dialog__title flex justify-between"
+        >Escolha {{ categoryComputed }}
+        <q-icon
+          v-ripple
+          class="relative-position cursor-pointer"
+          name="close"
+          @click="layoutStore.indictmentDialog = false"
+        />
       </q-card-section>
       <q-card-section class="q-dialog__message">
         <div class="indictment-container">

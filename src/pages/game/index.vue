@@ -572,10 +572,18 @@ export default defineComponent({
       let destination: any = null;
 
       coordDoors.forEach((door) => {
-        if (!destination || door.distance < destination.distance) {
+        const isChecklistDoor = this.sessionStore.activePlayer.checklist.some(
+          (c) => c.name === door.place
+        );
+        if (
+          !isChecklistDoor &&
+          (!destination || door.distance < destination.distance)
+        ) {
           destination = door;
         }
       });
+
+      console.log('destination', destination.place);
 
       const coordDirections = [
         {
@@ -624,13 +632,23 @@ export default defineComponent({
       const isInsidePlace = coordDoors.find(
         (door) => door.door === playerPosition
       );
+      const isOnEntry = coordDoors.find(
+        (door) => door.door === this.lastPosition
+      );
       if (isInsidePlace) {
         const nextStep = coordDirections.find(
           (dir) => dir.position === isInsidePlace.entry
         );
         direction = nextStep;
       } else {
+        if (isOnEntry) {
+          this.lastPosition = 0;
+        }
+
         coordDirections.forEach((dir) => {
+          const possibleDoor = this.doors.find((d) => d.door === dir.position);
+          if (possibleDoor && possibleDoor.door !== destination.door) return;
+
           if (
             this.checkObstacle(dir.position) &&
             dir.position !== this.lastPosition
