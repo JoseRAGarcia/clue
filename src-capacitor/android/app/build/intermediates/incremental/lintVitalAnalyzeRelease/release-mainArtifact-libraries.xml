@@ -104,6 +104,19 @@
       externalAnnotations="annotations.zip"
       proguardRules="proguard.txt"/>
   <library
+      name="D:\Google Drive\Projetos Particulares\clue\src-capacitor\android@@:hugotomazi-capacitor-navigation-bar::release"
+      jars="D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@hugotomazi\capacitor-navigation-bar\android\build\.transforms\da82cc491969682db7161ff2225e21cd\transformed\out\jars\classes.jar;D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@hugotomazi\capacitor-navigation-bar\android\build\.transforms\da82cc491969682db7161ff2225e21cd\transformed\out\jars\libs\R.jar"
+      resolved="android:hugotomazi-capacitor-navigation-bar:unspecified"
+      folder="D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@hugotomazi\capacitor-navigation-bar\android\build\.transforms\da82cc491969682db7161ff2225e21cd\transformed\out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
       name="androidx.fragment:fragment:1.5.6@aar"
       jars="C:\Users\Jose\.gradle\caches\transforms-3\caa37cc8ebbb231a68aa8267c9929f0b\transformed\fragment-1.5.6\jars\classes.jar"
       resolved="androidx.fragment:fragment:1.5.6"

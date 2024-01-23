@@ -32,3 +32,4 @@ br.com.dehdo.clue.app-packaged_res-30 D:\Google Drive\Projetos Particulares\clue
 br.com.dehdo.clue.app-packaged_res-31 D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@capacitor\android\capacitor\build\intermediates\packaged_res\release
 br.com.dehdo.clue.app-packaged_res-32 D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@capacitor\app\android\build\intermediates\packaged_res\release
 br.com.dehdo.clue.app-packaged_res-33 D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@capacitor\status-bar\android\build\intermediates\packaged_res\release
+br.com.dehdo.clue.app-packaged_res-34 D:\Google Drive\Projetos Particulares\clue\src-capacitor\node_modules\@hugotomazi\capacitor-navigation-bar\android\build\intermediates\packaged_res\release
