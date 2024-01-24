@@ -273,6 +273,7 @@
                 @click="initIndictment"
               />
               <q-btn
+                v-if="!sessionStore.game.indictment.answerCardName"
                 style="width: 100%"
                 class="q-mt-sm shadow-21 clue-text-muted"
                 color="white"
@@ -515,8 +516,8 @@ export default defineComponent({
         setTimeout(() => {
           this.layoutStore.checklistDialog = false;
           this.exitPlaceDialog();
-        }, 1000);
-      }, 500);
+        }, 500);
+      }, 1000);
     },
 
     checkCards() {

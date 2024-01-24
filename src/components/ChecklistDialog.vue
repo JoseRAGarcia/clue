@@ -24,7 +24,8 @@
             <q-toolbar-title> Personagens </q-toolbar-title>
           </q-toolbar>
           <div
-            class="character-card"
+            class="character-card checklist-card"
+            :class="{ 'name-to-check z-max': nameToCheck === checklist.name }"
             v-for="(checklist, index) in characterChecklist"
             :key="index"
           >
@@ -64,7 +65,8 @@
             <q-toolbar-title> Armas </q-toolbar-title>
           </q-toolbar>
           <div
-            class="weapon-card"
+            class="weapon-card checklist-card"
+            :class="{ 'name-to-check z-max': nameToCheck === checklist.name }"
             v-for="(checklist, index) in weaponChecklist"
             :key="index"
           >
@@ -80,7 +82,7 @@
                 <span
                   :style="checklist.checklist && 'opacity: 0.5;'"
                   :id="checklist.name"
-                  >{{ checklist.name }}</span
+                  >{{ weaponName(checklist.name) }}</span
                 >
               </span>
               <span>
@@ -104,7 +106,8 @@
             <q-toolbar-title> Cômodos </q-toolbar-title>
           </q-toolbar>
           <div
-            class="place-card"
+            class="place-card checklist-card"
+            :class="{ 'name-to-check z-max': nameToCheck === checklist.name }"
             v-for="(checklist, index) in placeChecklist"
             :key="index"
           >
@@ -120,7 +123,7 @@
                 <span
                   :style="checklist.checklist && 'opacity: 0.5;'"
                   :id="checklist.name"
-                  >{{ checklist.name }}</span
+                  >{{ placeName(checklist.name) }}</span
                 >
               </span>
               <span>
@@ -178,6 +181,7 @@ export default defineComponent({
       showCharacterContainer: true,
       showWeaponContainer: true,
       showPlaceContainer: true,
+      nameToCheck: '',
     };
   },
 
@@ -194,6 +198,7 @@ export default defineComponent({
       this.showCharacterContainer = true;
       this.showWeaponContainer = true;
       this.showPlaceContainer = true;
+      this.nameToCheck = '';
 
       if (novo && this.sessionStore.game.indictment.answerCardName) {
         const characters = this.sessionStore.cards.filter(
@@ -215,6 +220,10 @@ export default defineComponent({
         this.showPlaceContainer = places.some(
           (c) => c.name === this.sessionStore.game.indictment.answerCardName
         );
+
+        setTimeout(() => {
+          this.nameToCheck = this.sessionStore.game.indictment.answerCardName;
+        }, 500);
       }
     },
   },
@@ -256,6 +265,50 @@ export default defineComponent({
       });
     },
 
+    placeName(place: string) {
+      switch (place) {
+        case 'biblioteca':
+          return 'Biblioteca';
+        case 'cozinha':
+          return 'Cozinha';
+        case 'entrada':
+          return 'Entrada';
+        case 'escritorio':
+          return 'Escritório';
+        case 'jardiminverno':
+          return 'Jardim de Inverno';
+        case 'salaestar':
+          return 'Sala de Estar';
+        case 'salajantar':
+          return 'Sala de Jantar';
+        case 'salamusica':
+          return 'Sala de Música';
+        case 'salaojogos':
+          return 'Salão de Jogos';
+        default:
+          return '';
+      }
+    },
+
+    weaponName(weapon: string) {
+      switch (weapon) {
+        case 'castical':
+          return 'Castiçal';
+        case 'corda':
+          return 'Corda';
+        case 'cano':
+          return 'Cano';
+        case 'revolver':
+          return 'Revólver';
+        case 'chaveinglesa':
+          return 'Chave Inglesa';
+        case 'faca':
+          return 'Faca';
+        default:
+          return '';
+      }
+    },
+
     setSuspicious(checklist: IChecklist) {
       console.log(checklist);
     },
@@ -283,5 +336,15 @@ export default defineComponent({
 
 .strike-100 {
   width: 120%;
+}
+
+.checklist-card {
+  transition: all 0.5s;
+  transform-origin: left;
+}
+.name-to-check {
+  background: var(-q-primary);
+  border: 1px solid #ccc;
+  transform: scale(150%);
 }
 </style>
