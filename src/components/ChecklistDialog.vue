@@ -343,7 +343,7 @@ export default defineComponent({
   transform-origin: left;
 }
 .name-to-check {
-  background: var(-q-primary);
+  background: var(-q-primary) !important;
   border: 1px solid #ccc;
   transform: scale(150%);
 }

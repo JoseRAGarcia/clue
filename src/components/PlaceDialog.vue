@@ -345,7 +345,6 @@ export default defineComponent({
       checkingCards: false,
       ownCard: false,
       cardsToShow: [] as ICard[],
-      cardShown: {} as ICard,
     };
   },
 
@@ -493,8 +492,8 @@ export default defineComponent({
       this.sessionStore.game.indictment.answerPlayerId = '';
       this.sessionStore.game.indictment.answerCardName = '';
       this.sessionStore.game.indictment.answersList = [];
+      this.sessionStore.game.indictment.cardShown = {} as ICard;
       this.ownCard = false;
-      this.cardShown = {} as ICard;
     },
 
     setIndictment(category: string) {
@@ -511,12 +510,14 @@ export default defineComponent({
       this.layoutStore.checklistDialog = true;
 
       setTimeout(() => {
-        this.sessionStore.activePlayer.checklist.push(this.cardShown);
+        this.sessionStore.activePlayer.checklist.push(
+          this.sessionStore.game.indictment.cardShown
+        );
 
         setTimeout(() => {
           this.layoutStore.checklistDialog = false;
           this.exitPlaceDialog();
-        }, 500);
+        }, 1000);
       }, 1000);
     },
 
@@ -596,10 +597,11 @@ export default defineComponent({
       }
 
       this.sessionStore.game.indictment.answerCardName = card.name;
-      this.cardShown = card;
+      this.sessionStore.game.indictment.cardShown = card;
 
       if (this.sessionStore.activePlayer.isNpc) {
         setTimeout(() => {
+          this.sessionStore.activePlayer.checklist.push(card);
           this.exitPlaceDialog();
         }, 2000);
       }

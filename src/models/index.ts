@@ -41,6 +41,7 @@ export interface IIndictment {
   place: string;
   answerPlayerId: string;
   answerCardName: string;
+  cardShown: ICard;
   answersList: IAnswer[];
 }
 
