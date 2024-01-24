@@ -5,7 +5,8 @@
     transition-hide="scale"
   >
     <q-card class="q-dialog-plugin">
-      <q-card-section class="q-dialog__title flex justify-between"
+      <q-card-section
+        class="q-dialog__title flex items-center justify-between q-pa-sm bg-light q-mb-sm"
         >Checklist
         <q-icon
           v-ripple
@@ -14,9 +15,14 @@
           @click="layoutStore.checklistDialog = false"
         />
       </q-card-section>
-      <q-card-section class="q-dialog__message">
-        <div class="characters-container">
-          <div class="text-h6 text-primary">Personagens</div>
+      <q-card-section class="q-dialog__message scroll" style="max-height: 70vh">
+        <div
+          v-show="showCharacterContainer"
+          class="characters-container q-mt-md"
+        >
+          <q-toolbar class="bg-primary text-white">
+            <q-toolbar-title> Personagens </q-toolbar-title>
+          </q-toolbar>
           <div
             class="character-card"
             v-for="(checklist, index) in characterChecklist"
@@ -26,14 +32,18 @@
               class="full-width flex items-center justify-between q-pa-xs"
               :style="index % 2 == 0 && `background: var(--clue-light)`"
             >
-              <span class="text-subtitle1">{{ checklist.name }}</span>
+              <span class="subtitle2-size text-capitalize checklist-name">
+                <div
+                  class="strike"
+                  :class="{ 'strike-100': checklist.checklist }"
+                ></div>
+                <span
+                  :style="checklist.checklist && 'opacity: 0.5;'"
+                  :id="checklist.name"
+                  >{{ checklist.name }}</span
+                >
+              </span>
               <span>
-                <q-checkbox
-                  disable
-                  color="teal"
-                  size="xs"
-                  v-model="checklist.checklist"
-                />
                 <q-checkbox
                   :style="
                     checklist.checklist && 'opacity: 0; pointer-events: none;'
@@ -48,10 +58,11 @@
             </div>
           </div>
         </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="weapon-container">
-          <div class="text-h6 text-primary">Armas</div>
+        <q-separator />
+        <div v-show="showWeaponContainer" class="weapon-container q-mt-md">
+          <q-toolbar class="bg-primary text-white">
+            <q-toolbar-title> Armas </q-toolbar-title>
+          </q-toolbar>
           <div
             class="weapon-card"
             v-for="(checklist, index) in weaponChecklist"
@@ -61,14 +72,18 @@
               class="full-width flex items-center justify-between q-pa-xs"
               :style="index % 2 == 0 && `background: var(--clue-light)`"
             >
-              <span class="text-subtitle1">{{ checklist.name }}</span>
+              <span class="subtitle2-size text-capitalize checklist-name">
+                <div
+                  class="strike"
+                  :class="{ 'strike-100': checklist.checklist }"
+                ></div>
+                <span
+                  :style="checklist.checklist && 'opacity: 0.5;'"
+                  :id="checklist.name"
+                  >{{ checklist.name }}</span
+                >
+              </span>
               <span>
-                <q-checkbox
-                  disable
-                  color="teal"
-                  size="xs"
-                  v-model="checklist.checklist"
-                />
                 <q-checkbox
                   :style="
                     checklist.checklist && 'opacity: 0; pointer-events: none;'
@@ -83,10 +98,11 @@
             </div>
           </div>
         </div>
-      </q-card-section>
-      <q-card-section>
-        <div class="place-container">
-          <div class="text-h6 text-primary">Cômodos</div>
+        <q-separator />
+        <div v-show="showPlaceContainer" class="place-container q-mt-md">
+          <q-toolbar class="bg-primary text-white">
+            <q-toolbar-title> Cômodos </q-toolbar-title>
+          </q-toolbar>
           <div
             class="place-card"
             v-for="(checklist, index) in placeChecklist"
@@ -96,14 +112,18 @@
               class="full-width flex items-center justify-between q-pa-xs"
               :style="index % 2 == 0 && `background: var(--clue-light)`"
             >
-              <span class="text-subtitle1">{{ checklist.name }}</span>
+              <span class="subtitle2-size text-capitalize checklist-name">
+                <div
+                  class="strike"
+                  :class="{ 'strike-100': checklist.checklist }"
+                ></div>
+                <span
+                  :style="checklist.checklist && 'opacity: 0.5;'"
+                  :id="checklist.name"
+                  >{{ checklist.name }}</span
+                >
+              </span>
               <span>
-                <q-checkbox
-                  disable
-                  color="teal"
-                  size="xs"
-                  v-model="checklist.checklist"
-                />
                 <q-checkbox
                   :style="
                     checklist.checklist && 'opacity: 0; pointer-events: none;'
@@ -149,36 +169,54 @@ export default defineComponent({
     };
   },
 
-  mounted() {
-    this.sessionStore.cards.forEach((card) => {
-      if (card.category === 'character') {
-        this.characterChecklist.push({
-          ...card,
-          checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
-          suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
-        });
-      } else if (card.category === 'weapon') {
-        this.weaponChecklist.push({
-          ...card,
-          checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
-          suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
-        });
-      } else if (card.category === 'place') {
-        this.placeChecklist.push({
-          ...card,
-          checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
-          suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
-        });
-      }
-    });
-  },
-
   data() {
     return {
       characterChecklist: [] as IChecklist[],
       weaponChecklist: [] as IChecklist[],
       placeChecklist: [] as IChecklist[],
+
+      showCharacterContainer: true,
+      showWeaponContainer: true,
+      showPlaceContainer: true,
     };
+  },
+
+  watch: {
+    'myPlayer.checklist': {
+      handler: function () {
+        this.checkChecklist();
+      },
+      deep: true,
+      immediate: true,
+    },
+
+    'layoutStore.checklistDialog': function (novo) {
+      this.showCharacterContainer = true;
+      this.showWeaponContainer = true;
+      this.showPlaceContainer = true;
+
+      if (novo && this.sessionStore.game.indictment.answerCardName) {
+        const characters = this.sessionStore.cards.filter(
+          (c) => c.category === 'character'
+        );
+        const weapons = this.sessionStore.cards.filter(
+          (c) => c.category === 'weapon'
+        );
+        const places = this.sessionStore.cards.filter(
+          (c) => c.category === 'place'
+        );
+
+        this.showCharacterContainer = characters.some(
+          (c) => c.name === this.sessionStore.game.indictment.answerCardName
+        );
+        this.showWeaponContainer = weapons.some(
+          (c) => c.name === this.sessionStore.game.indictment.answerCardName
+        );
+        this.showPlaceContainer = places.some(
+          (c) => c.name === this.sessionStore.game.indictment.answerCardName
+        );
+      }
+    },
   },
 
   computed: {
@@ -190,6 +228,34 @@ export default defineComponent({
   },
 
   methods: {
+    checkChecklist() {
+      this.characterChecklist = [];
+      this.weaponChecklist = [];
+      this.placeChecklist = [];
+
+      this.sessionStore.cards.forEach((card) => {
+        if (card.category === 'character') {
+          this.characterChecklist.push({
+            ...card,
+            checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
+            suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
+          });
+        } else if (card.category === 'weapon') {
+          this.weaponChecklist.push({
+            ...card,
+            checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
+            suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
+          });
+        } else if (card.category === 'place') {
+          this.placeChecklist.push({
+            ...card,
+            checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
+            suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
+          });
+        }
+      });
+    },
+
     setSuspicious(checklist: IChecklist) {
       console.log(checklist);
     },
@@ -197,5 +263,25 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.checklist-name {
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.strike {
+  content: '';
+  background: var(--q-negative);
+  position: absolute;
+  bottom: 50%;
+  left: -5px;
+  height: 2px;
+  width: 0;
+  transform: translateY(50%);
+  transition: width 0.5s;
+}
+
+.strike-100 {
+  width: 120%;
+}
 </style>

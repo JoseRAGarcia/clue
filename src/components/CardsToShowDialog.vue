@@ -6,7 +6,9 @@
     persistent
   >
     <q-card class="q-dialog-plugin">
-      <q-card-section class="q-dialog__title flex justify-between">
+      <q-card-section
+        class="q-dialog__title flex items-center justify-between q-pa-sm bg-light q-mb-sm"
+      >
         Escolha uma Carta para Mostrar
         <span class="text-primary">{{ timer }}</span>
       </q-card-section>

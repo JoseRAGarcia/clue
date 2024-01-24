@@ -6,7 +6,11 @@
     persistent
   >
     <q-card class="q-dialog-plugin" style="width: 1200px !important">
-      <q-card-section class="q-dialog__title"> Fim de Jogo </q-card-section>
+      <q-card-section
+        class="q-dialog__title flex items-center justify-between q-pa-sm bg-light q-mb-sm"
+      >
+        Fim de Jogo
+      </q-card-section>
       <q-card-section class="q-dialog__message">
         <div>
           <span class="text-primary text-bold text-capitalize">

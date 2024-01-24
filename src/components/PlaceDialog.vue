@@ -188,7 +188,7 @@
                       class="q-mt-sm"
                       color="primary"
                       label="OK"
-                      @click="exitPlaceDialog"
+                      @click="acceptCard"
                     />
                   </div>
                 </template>
@@ -344,6 +344,7 @@ export default defineComponent({
       checkingCards: false,
       ownCard: false,
       cardsToShow: [] as ICard[],
+      cardShown: {} as ICard,
     };
   },
 
@@ -492,6 +493,7 @@ export default defineComponent({
       this.sessionStore.game.indictment.answerCardName = '';
       this.sessionStore.game.indictment.answersList = [];
       this.ownCard = false;
+      this.cardShown = {} as ICard;
     },
 
     setIndictment(category: string) {
@@ -502,6 +504,19 @@ export default defineComponent({
     finishIndictment(playerId: string) {
       this.sessionStore.game.indictment.indictmentMade = true;
       this.sessionStore.setAnswerPlayerId(playerId);
+    },
+
+    acceptCard() {
+      this.layoutStore.checklistDialog = true;
+
+      setTimeout(() => {
+        this.sessionStore.activePlayer.checklist.push(this.cardShown);
+
+        setTimeout(() => {
+          this.layoutStore.checklistDialog = false;
+          this.exitPlaceDialog();
+        }, 1000);
+      }, 500);
     },
 
     checkCards() {
@@ -580,7 +595,7 @@ export default defineComponent({
       }
 
       this.sessionStore.game.indictment.answerCardName = card.name;
-      this.sessionStore.activePlayer.checklist.push(card);
+      this.cardShown = card;
 
       if (this.sessionStore.activePlayer.isNpc) {
         setTimeout(() => {

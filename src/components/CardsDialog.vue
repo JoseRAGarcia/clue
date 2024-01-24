@@ -5,7 +5,8 @@
     transition-hide="scale"
   >
     <q-card class="q-dialog-plugin">
-      <q-card-section class="q-dialog__title flex justify-between"
+      <q-card-section
+        class="q-dialog__title flex items-center justify-between q-pa-sm bg-light q-mb-sm"
         >Suas Cartas
         <q-icon
           v-ripple
