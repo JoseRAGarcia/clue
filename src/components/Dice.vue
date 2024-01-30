@@ -6,7 +6,7 @@
   background-position: center;`"
   >
     <input
-      v-for="(num, index) in 36"
+      v-for="(num, index) in sessionStore.game.config.doubleDice ? 36 : 6"
       :key="index"
       :class="`setA rollA${num}`"
       type="radio"
@@ -14,7 +14,7 @@
       :id="`rollA${num}`"
     />
     <input
-      v-for="(num, index) in 36"
+      v-for="(num, index) in sessionStore.game.config.doubleDice ? 36 : 6"
       :key="index"
       :class="`setB rollB${num}`"
       type="radio"
@@ -38,18 +38,26 @@
 
       <div class="result-content">
         <div
-          v-for="(num, index) in 11"
+          v-for="(num, index) in sessionStore.game.config.doubleDice ? 11 : 6"
           :key="index"
-          :class="`result-A${num + 1}`"
+          :class="
+            sessionStore.game.config.doubleDice
+              ? `result-A${num + 1}`
+              : `result-A${num}`
+          "
         >
-          <span>{{ num + 1 }}</span>
+          <span>{{ sessionStore.game.config.doubleDice ? num + 1 : num }}</span>
         </div>
         <div
-          v-for="(num, index) in 11"
+          v-for="(num, index) in sessionStore.game.config.doubleDice ? 11 : 6"
           :key="index"
-          :class="`result-B${num + 1}`"
+          :class="
+            sessionStore.game.config.doubleDice
+              ? `result-B${num + 1}`
+              : `result-B${num}`
+          "
         >
-          <span>{{ num + 1 }}</span>
+          <span>{{ sessionStore.game.config.doubleDice ? num + 1 : num }}</span>
         </div>
       </div>
     </div>
@@ -85,7 +93,7 @@
           </div>
         </div>
       </div>
-      <div class="die-wrapper die2">
+      <div v-if="sessionStore.game.config.doubleDice" class="die-wrapper die2">
         <div class="die">
           <div class="die-inner">
             <div class="face face1">
@@ -143,7 +151,6 @@ export default defineComponent({
   methods: {
     roll() {
       setTimeout(() => {
-        // const randomNum = Math.floor(Math.random() * 36) + 1;
         const randomElA = document.querySelector(
           `.rollA${this.sessionStore.game.diceValue}`
         ) as HTMLElement;
@@ -164,7 +171,9 @@ export default defineComponent({
     },
 
     getResult() {
-      for (let i = 1; i <= 12; i++) {
+      const limit = this.sessionStore.game.config.doubleDice ? 12 : 6;
+
+      for (let i = 1; i <= limit; i++) {
         const elA = document.querySelector(`.result-A${i}`) as HTMLElement;
         const elB = document.querySelector(`.result-B${i}`) as HTMLElement;
 

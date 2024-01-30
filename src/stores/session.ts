@@ -17,7 +17,10 @@ export const useSessionStore = defineStore('session', {
       id: '',
       room: '',
       ownerId: '',
-      qtdPlayers: 6,
+      config: {
+        pawnsQtd: 3,
+        doubleDice: false,
+      },
       players: [],
       targets: [],
       activeIndex: 0,
@@ -31,6 +34,7 @@ export const useSessionStore = defineStore('session', {
         place: '',
         answerPlayerId: '',
         answerCardName: '',
+        cardShown: {} as ICard,
         answersList: []
       } as IIndictment,
       status: "",
@@ -87,6 +91,7 @@ export const useSessionStore = defineStore('session', {
           place: '',
           answerPlayerId: '',
           answerCardName: '',
+          cardShown: {} as ICard,
           answersList: []
         } as IIndictment,
         status: "",

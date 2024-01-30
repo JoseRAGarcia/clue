@@ -31,7 +31,11 @@
           >
             <div
               class="full-width flex items-center justify-between q-pa-xs"
-              :style="index % 2 == 0 && `background: var(--clue-light)`"
+              :style="
+                index % 2 == 0
+                  ? `background: var(--clue-light)`
+                  : `background: #fff`
+              "
             >
               <span class="subtitle2-size text-capitalize checklist-name">
                 <div
@@ -43,18 +47,6 @@
                   :id="checklist.name"
                   >{{ checklist.name }}</span
                 >
-              </span>
-              <span>
-                <q-checkbox
-                  :style="
-                    checklist.checklist && 'opacity: 0; pointer-events: none;'
-                  "
-                  keep-color
-                  color="teal"
-                  checked-icon="help"
-                  unchecked-icon="help_outline"
-                  v-model="checklist.suspicious"
-                />
               </span>
             </div>
           </div>
@@ -72,7 +64,11 @@
           >
             <div
               class="full-width flex items-center justify-between q-pa-xs"
-              :style="index % 2 == 0 && `background: var(--clue-light)`"
+              :style="
+                index % 2 == 0
+                  ? `background: var(--clue-light)`
+                  : `background: #fff`
+              "
             >
               <span class="subtitle2-size text-capitalize checklist-name">
                 <div
@@ -84,18 +80,6 @@
                   :id="checklist.name"
                   >{{ weaponName(checklist.name) }}</span
                 >
-              </span>
-              <span>
-                <q-checkbox
-                  :style="
-                    checklist.checklist && 'opacity: 0; pointer-events: none;'
-                  "
-                  keep-color
-                  color="teal"
-                  checked-icon="help"
-                  unchecked-icon="help_outline"
-                  v-model="checklist.suspicious"
-                />
               </span>
             </div>
           </div>
@@ -113,7 +97,11 @@
           >
             <div
               class="full-width flex items-center justify-between q-pa-xs"
-              :style="index % 2 == 0 && `background: var(--clue-light)`"
+              :style="
+                index % 2 == 0
+                  ? `background: var(--clue-light)`
+                  : `background: #fff`
+              "
             >
               <span class="subtitle2-size text-capitalize checklist-name">
                 <div
@@ -125,18 +113,6 @@
                   :id="checklist.name"
                   >{{ placeName(checklist.name) }}</span
                 >
-              </span>
-              <span>
-                <q-checkbox
-                  :style="
-                    checklist.checklist && 'opacity: 0; pointer-events: none;'
-                  "
-                  keep-color
-                  color="teal"
-                  checked-icon="help"
-                  unchecked-icon="help_outline"
-                  v-model="checklist.suspicious"
-                />
               </span>
             </div>
           </div>
@@ -156,7 +132,6 @@ interface IChecklist {
   name: string;
   category: string;
   checklist?: boolean;
-  suspicious?: boolean;
 }
 
 export default defineComponent({
@@ -247,19 +222,16 @@ export default defineComponent({
           this.characterChecklist.push({
             ...card,
             checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
-            suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
           });
         } else if (card.category === 'weapon') {
           this.weaponChecklist.push({
             ...card,
             checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
-            suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
           });
         } else if (card.category === 'place') {
           this.placeChecklist.push({
             ...card,
             checklist: this.myPlayer?.checklist.some((c) => c.id === card.id),
-            suspicious: this.myPlayer?.suspicious.some((c) => c.id === card.id),
           });
         }
       });
@@ -307,10 +279,6 @@ export default defineComponent({
         default:
           return '';
       }
-    },
-
-    setSuspicious(checklist: IChecklist) {
-      console.log(checklist);
     },
   },
 });

@@ -51,11 +51,16 @@ export interface IDoor {
   place: string;
 }
 
+export interface IConfig {
+  pawnsQtd: number;
+  doubleDice: boolean;
+}
+
 export interface IGame {
   id: string;
   room: string;
   ownerId: string;
-  qtdPlayers: number;
+  config: IConfig;
   players: IPlayer[];
   targets: ICard[];
   activeIndex: number;

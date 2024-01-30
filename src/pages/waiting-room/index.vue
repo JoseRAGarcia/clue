@@ -187,7 +187,7 @@ export default defineComponent({
       this.sessionStore.characters.forEach((character) => {
         if (
           this.sessionStore.game.players.length <
-            this.sessionStore.game.qtdPlayers &&
+            this.sessionStore.game.config.pawnsQtd &&
           this.sessionStore.game.players.every((p) => p.name !== character.name)
         ) {
           const player: IPlayer = {
@@ -249,7 +249,7 @@ export default defineComponent({
         this.sessionStore.game.players[playerIndex].checklist.push(card);
         givenCards.push(card);
 
-        if (playerIndex < this.sessionStore.game.qtdPlayers - 1) {
+        if (playerIndex < this.sessionStore.game.config.pawnsQtd - 1) {
           playerIndex++;
         } else {
           playerIndex = 0;

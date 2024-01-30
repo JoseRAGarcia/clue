@@ -639,7 +639,8 @@ export default defineComponent({
   justify-content: center;
   font-size: 1.5rem;
   z-index: 1;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .indictment-card {

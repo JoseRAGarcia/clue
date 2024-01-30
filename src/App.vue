@@ -18,13 +18,11 @@ import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
 import { useFirebaseStore } from 'stores/firebase';
 import { usekeepAwakeStore } from 'stores/keepAwake';
+import { useConfigStore } from 'stores/config';
 import { v4 as uuidv4 } from 'uuid';
 import { IUser } from './models';
 import { StatusBar, Style } from '@capacitor/status-bar';
-import {
-  NavigationBar,
-  NavigationBarPluginEvents,
-} from '@hugotomazi/capacitor-navigation-bar';
+import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 
 export default defineComponent({
   name: 'App',
@@ -34,6 +32,7 @@ export default defineComponent({
     const layoutStore = useLayoutStore();
     const firebaseStore = useFirebaseStore();
     const keepAwakeStore = usekeepAwakeStore();
+    const configStore = useConfigStore();
 
     const userReady = ref(false);
 
@@ -43,6 +42,7 @@ export default defineComponent({
       userReady,
       firebaseStore,
       keepAwakeStore,
+      configStore,
     };
   },
 
@@ -51,6 +51,8 @@ export default defineComponent({
   },
 
   async mounted() {
+    this.configStore.setSavedConfig();
+
     if (this.$q.platform.is.capacitor && this.$q.platform.is.android) {
       await StatusBar.setStyle({
         style: Style.Dark,
@@ -124,6 +126,13 @@ export default defineComponent({
     'sessionStore.playerSelected': {
       handler: function (novo) {
         localStorage.setItem('playerSelected', JSON.stringify(novo));
+      },
+      deep: true,
+    },
+
+    'configStore.$state': {
+      handler: function (novo) {
+        localStorage.setItem('config', JSON.stringify(novo));
       },
       deep: true,
     },

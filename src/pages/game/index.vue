@@ -496,7 +496,15 @@ export default defineComponent({
 
     rollDice() {
       this.rollDiceBtnDialog = false;
-      this.sessionStore.game.diceValue = 12;
+      // this.sessionStore.game.diceValue =
+      //   Math.floor(
+      //     Math.random() * (this.sessionStore.game.config.doubleDice ? 36 : 6)
+      //   ) + 1; //12;
+
+      this.sessionStore.game.diceValue = this.sessionStore.game.config
+        .doubleDice
+        ? Math.floor(Math.random() * (13 - 2)) + 2
+        : Math.floor(Math.random() * 6) + 1;
       this.sessionStore.game.rollDice = true;
     },
 

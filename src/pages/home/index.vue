@@ -11,7 +11,7 @@
           style="opacity: 0.5"
           name="settings"
           size="32px"
-          @click="openConfigDialog"
+          @click="layoutStore.configDialog = true"
         />
       </div>
     </div>
@@ -35,6 +35,7 @@
       />
     </div>
   </q-page>
+  <ConfigDialog />
 </template>
 
 <script lang="ts">
@@ -42,7 +43,9 @@ import { defineComponent } from 'vue';
 import { useSessionStore } from 'stores/session';
 import { useLayoutStore } from 'stores/layout';
 import { useFirebaseStore } from 'stores/firebase';
+import { useConfigStore } from 'stores/config';
 import { v4 as uuidv4 } from 'uuid';
+import ConfigDialog from 'components/ConfigDialog.vue';
 
 export default defineComponent({
   name: 'HomePage',
@@ -51,12 +54,18 @@ export default defineComponent({
     const sessionStore = useSessionStore();
     const layoutStore = useLayoutStore();
     const firebaseStore = useFirebaseStore();
+    const configStore = useConfigStore();
 
     return {
       sessionStore,
       layoutStore,
       firebaseStore,
+      configStore,
     };
+  },
+
+  components: {
+    ConfigDialog,
   },
 
   methods: {
@@ -68,6 +77,7 @@ export default defineComponent({
         .toUpperCase();
       this.sessionStore.game.status = 'waiting';
       this.sessionStore.game.ownerId = this.sessionStore.user.id;
+      this.sessionStore.game.config = this.configStore.$state;
 
       this.layoutStore.loadingLayout = true;
       await this.firebaseStore
@@ -111,28 +121,6 @@ export default defineComponent({
         })
         .onOk((data) => {
           this.enterRoom(data.toUpperCase());
-        });
-    },
-
-    openConfigDialog() {
-      this.$q
-        .dialog({
-          title: 'Configurações',
-          message: 'Quantidade de Jogadores',
-          options: {
-            type: 'radio',
-            model: this.sessionStore.game.qtdPlayers,
-            inline: true,
-            items: [
-              { label: '2', value: 2 },
-              { label: '3', value: 3 },
-              { label: '6', value: 6 },
-            ],
-          },
-          ok: true, // we want the user to not be able to close it
-        })
-        .onOk((data) => {
-          this.sessionStore.game.qtdPlayers = data;
         });
     },
   },
