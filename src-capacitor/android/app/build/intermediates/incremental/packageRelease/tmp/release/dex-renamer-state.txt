@@ -1,4 +1,4 @@
-#Tue Jan 30 15:55:50 BRT 2024
+#Tue Jan 30 15:57:27 BRT 2024
 base.0=D\:\\Google Drive\\Projetos Particulares\\clue\\src-capacitor\\android\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

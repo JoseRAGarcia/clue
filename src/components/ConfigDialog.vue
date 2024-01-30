@@ -27,6 +27,7 @@
       <q-card-section class="q-dialog__message">
         <div class="text-size q-pb-sm">Quantidade de dados</div>
         <q-btn-toggle
+          disable
           spread
           v-model="configStore.doubleDice"
           color="light"
