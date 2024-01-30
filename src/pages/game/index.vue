@@ -505,7 +505,7 @@ export default defineComponent({
       //   .doubleDice
       //   ? Math.floor(Math.random() * (13 - 2)) + 2
       //   : Math.floor(Math.random() * 6) + 1;
-      // this.sessionStore.game.rollDice = true;
+      this.sessionStore.game.rollDice = true;
     },
 
     walk() {
