@@ -1,4 +1,4 @@
-#Tue Jan 30 15:59:12 BRT 2024
+#Tue Jan 30 16:04:00 BRT 2024
 base.0=D\:\\Google Drive\\Projetos Particulares\\clue\\src-capacitor\\android\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=D\:\\Google Drive\\Projetos Particulares\\clue\\src-capacitor\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\10\\classes.dex
 base.2=D\:\\Google Drive\\Projetos Particulares\\clue\\src-capacitor\\android\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\14\\classes.dex
