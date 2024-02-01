@@ -32,7 +32,8 @@ module.exports = configure(function (/* ctx */) {
     boot: [
       'i18n',
       'axios',
-      'firebase'
+      'firebase',
+      'vercel-analytics',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
