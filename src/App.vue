@@ -8,10 +8,12 @@
     label-style="font-size: 1.1em"
   />
   <ExitGameDialog />
+  <SpeedInsights />
 </template>
 
 <script lang="ts">
 import ExitGameDialog from 'components/ExitGameDialog.vue';
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 
 import { defineComponent, ref } from 'vue';
 import { useSessionStore } from 'stores/session';
@@ -48,6 +50,7 @@ export default defineComponent({
 
   components: {
     ExitGameDialog,
+    SpeedInsights,
   },
 
   async mounted() {
