@@ -12,11 +12,7 @@
           @click="layoutStore.checklistDialog = true"
         />
       </div>
-      <div
-        v-ripple
-        class="options-bar-item"
-        @click="layoutStore.cardsDialog = true"
-      >
+      <div v-ripple class="options-bar-item" @click="layoutStore.cardsDialog = true">
         <q-icon name="style" size="24px" color="primary" />
       </div>
       <div v-ripple class="options-bar-item">
@@ -50,21 +46,11 @@
       </div>
 
       <div class="places">
-        <div class="place stairway solid" :class="{ hidden: !showMarkers }">
-          Stairway
-        </div>
-        <div class="place study solid" :class="{ hidden: !showMarkers }">
-          Study
-        </div>
-        <div class="place hall solid" :class="{ hidden: !showMarkers }">
-          Hall
-        </div>
-        <div class="place lounge solid" :class="{ hidden: !showMarkers }">
-          Lounge
-        </div>
-        <div class="place library solid" :class="{ hidden: !showMarkers }">
-          Library
-        </div>
+        <div class="place stairway solid" :class="{ hidden: !showMarkers }">Stairway</div>
+        <div class="place study solid" :class="{ hidden: !showMarkers }">Study</div>
+        <div class="place hall solid" :class="{ hidden: !showMarkers }">Hall</div>
+        <div class="place lounge solid" :class="{ hidden: !showMarkers }">Lounge</div>
+        <div class="place library solid" :class="{ hidden: !showMarkers }">Library</div>
         <div class="place dinning solid" :class="{ hidden: !showMarkers }">
           Dinning Room
         </div>
@@ -77,9 +63,7 @@
         <div class="place ballroom solid" :class="{ hidden: !showMarkers }">
           Ball Room
         </div>
-        <div class="place kitchen solid" :class="{ hidden: !showMarkers }">
-          Kitchen
-        </div>
+        <div class="place kitchen solid" :class="{ hidden: !showMarkers }">Kitchen</div>
       </div>
 
       <div class="controls">
@@ -149,23 +133,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { matrix, walls, doors } from 'src/models/obstacles';
-import { useSessionStore } from 'stores/session';
-import { useLayoutStore } from 'stores/layout';
-import { useFirebaseStore } from 'stores/firebase';
+import { defineComponent } from "vue";
+import { matrix, walls, doors } from "src/models/obstacles";
+import { useSessionStore } from "stores/session";
+import { useLayoutStore } from "stores/layout";
+import { useFirebaseStore } from "stores/firebase";
 
-import Player from 'components/Player.vue';
-import DiceDialog from 'components/DiceDialog.vue';
-import CardsDialog from 'components/CardsDialog.vue';
-import PlaceDialog from 'components/PlaceDialog.vue';
-import ChecklistDialog from 'components/ChecklistDialog.vue';
-import VictoryDialog from 'components/VictoryDialog.vue';
+import Player from "components/Player.vue";
+import DiceDialog from "components/DiceDialog.vue";
+import CardsDialog from "components/CardsDialog.vue";
+import PlaceDialog from "components/PlaceDialog.vue";
+import ChecklistDialog from "components/ChecklistDialog.vue";
+import VictoryDialog from "components/VictoryDialog.vue";
 
-import { IPlayer } from 'src/models';
+import { IPlayer } from "src/models";
 
 export default defineComponent({
-  name: 'GamePage',
+  name: "GamePage",
 
   setup() {
     const sessionStore = useSessionStore();
@@ -208,7 +192,7 @@ export default defineComponent({
   beforeRouteEnter(to, from, next) {
     const sessionStore = useSessionStore();
 
-    if (!sessionStore.game.id || sessionStore.game.status !== 'started') {
+    if (!sessionStore.game.id || sessionStore.game.status !== "started") {
       next(false);
     } else {
       next();
@@ -230,7 +214,7 @@ export default defineComponent({
       doors,
       loaded: false,
       showMarkers: false,
-      lastDirection: 'up',
+      lastDirection: "up",
       rollDiceBtnDialog: false,
       nextDoor: 0,
       lastPosition: 0,
@@ -239,22 +223,22 @@ export default defineComponent({
   },
 
   watch: {
-    'sessionStore.game': {
+    "sessionStore.game": {
       handler: function (novo) {
         if (!novo.id) {
-          this.$router.push('/home');
+          this.$router.push("/home");
         } else {
           this.firebaseStore.updateGame(novo);
 
           if (!novo.diceValue) {
-            this.localPlayers = Array.from(novo.players);
+            this.localPlayers = [...novo.players];
           }
         }
       },
       deep: true,
     },
 
-    'sessionStore.game.rollDice': function (novo) {
+    "sessionStore.game.rollDice": function (novo) {
       if (!novo) {
         this.setPlayerFocus();
         if (this.isNpc && this.isOwner) {
@@ -265,7 +249,7 @@ export default defineComponent({
       }
     },
 
-    'sessionStore.activePlayer': {
+    "sessionStore.activePlayer": {
       handler: function (novo, antigo) {
         if (novo.playerPosition !== antigo.playerPosition) {
           if ((this.isNpc && !this.isOwner) || !this.isPlayer) {
@@ -289,7 +273,7 @@ export default defineComponent({
       deep: true,
     },
 
-    'sessionStore.game.indictment.place': {
+    "sessionStore.game.indictment.place": {
       handler: function (novo) {
         if (novo) {
           this.layoutStore.placeDialog = true;
@@ -299,7 +283,7 @@ export default defineComponent({
       },
     },
 
-    'sessionStore.game.winnerId': function (novo) {
+    "sessionStore.game.winnerId": function (novo) {
       if (novo) {
         setTimeout(() => {
           this.layoutStore.victoryDialog = true;
@@ -307,11 +291,11 @@ export default defineComponent({
       }
     },
 
-    'sessionStore.game.status': function (novo) {
-      if (novo === 'finished') {
-        this.sessionStore.user.gameId = '';
+    "sessionStore.game.status": function (novo) {
+      if (novo === "finished") {
+        this.sessionStore.user.gameId = "";
         this.sessionStore.cleanGame();
-        this.$router.push({ name: 'home' });
+        this.$router.push({ name: "home" });
       }
     },
   },
@@ -322,10 +306,7 @@ export default defineComponent({
     },
 
     isPlayer() {
-      return (
-        this.sessionStore.activePlayer?.id ===
-        this.sessionStore.playerSelected?.id
-      );
+      return this.sessionStore.activePlayer?.id === this.sessionStore.playerSelected?.id;
     },
 
     isNpc() {
@@ -348,26 +329,23 @@ export default defineComponent({
 
   methods: {
     padMovePlayer(direction: string, walk?: boolean): boolean | undefined {
-      console.log('padMovePlayer', direction);
+      console.log("padMovePlayer", direction);
 
-      let player: any = document.querySelector(
-        `#${this.sessionStore.activePlayer.name}`
-      );
-      if (!player || player.classList.contains('player-moving')) return;
+      let player: any = document.querySelector(`#${this.sessionStore.activePlayer.name}`);
+      if (!player || player.classList.contains("player-moving")) return;
 
-      const top = parseInt(getComputedStyle(player).top.replace('px', ''));
-      const left = parseInt(getComputedStyle(player).left.replace('px', ''));
+      const top = parseInt(getComputedStyle(player).top.replace("px", ""));
+      const left = parseInt(getComputedStyle(player).left.replace("px", ""));
 
-      if (direction === 'up') {
-        const nextFloor =
-          this.sessionStore.activePlayer.playerPosition - (walk ? 0 : 24);
+      if (direction === "up") {
+        const nextFloor = this.sessionStore.activePlayer.playerPosition - (walk ? 0 : 24);
         if (!this.checkObstacle(nextFloor)) return false;
 
-        player.classList.add('player-moving');
-        player.style.top = top - 50 + 'px';
+        player.classList.add("player-moving");
+        player.style.top = top - 50 + "px";
 
-        if (this.lastDirection == 'up') {
-          this.setPlayerFocus('y');
+        if (this.lastDirection == "up") {
+          this.setPlayerFocus("y");
         }
 
         setTimeout(() => {
@@ -377,16 +355,15 @@ export default defineComponent({
             this.localPlayers = Array.from(this.sessionStore.game.players);
           }
         }, 300);
-      } else if (direction === 'right') {
-        const nextFloor =
-          this.sessionStore.activePlayer.playerPosition + (walk ? 0 : 1);
+      } else if (direction === "right") {
+        const nextFloor = this.sessionStore.activePlayer.playerPosition + (walk ? 0 : 1);
         if (!this.checkObstacle(nextFloor)) return false;
 
-        player.classList.add('player-moving');
-        player.style.left = left + 50 + 'px';
+        player.classList.add("player-moving");
+        player.style.left = left + 50 + "px";
 
-        if (this.lastDirection == 'right') {
-          this.setPlayerFocus('x');
+        if (this.lastDirection == "right") {
+          this.setPlayerFocus("x");
         }
 
         setTimeout(() => {
@@ -396,16 +373,15 @@ export default defineComponent({
             this.localPlayers = Array.from(this.sessionStore.game.players);
           }
         }, 300);
-      } else if (direction === 'down') {
-        const nextFloor =
-          this.sessionStore.activePlayer.playerPosition + (walk ? 0 : 24);
+      } else if (direction === "down") {
+        const nextFloor = this.sessionStore.activePlayer.playerPosition + (walk ? 0 : 24);
         if (!this.checkObstacle(nextFloor)) return false;
 
-        player.classList.add('player-moving');
-        player.style.top = top + 50 + 'px';
+        player.classList.add("player-moving");
+        player.style.top = top + 50 + "px";
 
-        if (this.lastDirection == 'down') {
-          this.setPlayerFocus('y');
+        if (this.lastDirection == "down") {
+          this.setPlayerFocus("y");
         }
 
         setTimeout(() => {
@@ -415,16 +391,15 @@ export default defineComponent({
             this.localPlayers = Array.from(this.sessionStore.game.players);
           }
         }, 300);
-      } else if (direction === 'left') {
-        const nextFloor =
-          this.sessionStore.activePlayer.playerPosition - (walk ? 0 : 1);
+      } else if (direction === "left") {
+        const nextFloor = this.sessionStore.activePlayer.playerPosition - (walk ? 0 : 1);
         if (!this.checkObstacle(nextFloor)) return false;
 
-        player.classList.add('player-moving');
-        player.style.left = left - 50 + 'px';
+        player.classList.add("player-moving");
+        player.style.left = left - 50 + "px";
 
-        if (this.lastDirection == 'left') {
-          this.setPlayerFocus('x');
+        if (this.lastDirection == "left") {
+          this.setPlayerFocus("x");
         }
 
         setTimeout(() => {
@@ -441,28 +416,21 @@ export default defineComponent({
     },
 
     checkObstacle(nextFloor: number): boolean {
-      console.log('checkObstacle', nextFloor);
+      console.log("checkObstacle", nextFloor);
       const place = this.doors.find((d) => d.door == nextFloor);
 
-      if (
-        place &&
-        this.sessionStore.activePlayer.playerPosition !== place.entry
-      ) {
+      if (place && this.sessionStore.activePlayer.playerPosition !== place.entry) {
         return false;
-      } else if (
-        nextFloor < 0 ||
-        nextFloor > 600 ||
-        this.walls.includes(nextFloor)
-      ) {
+      } else if (nextFloor < 0 || nextFloor > 600 || this.walls.includes(nextFloor)) {
         return false;
       }
       return true;
     },
 
     setPlayerPosition(player: any, nextFloor: number) {
-      player.classList.remove('player-moving');
+      player.classList.remove("player-moving");
 
-      console.log('nextFloor', nextFloor);
+      console.log("nextFloor", nextFloor);
 
       this.sessionStore.activePlayer.playerPosition = nextFloor;
 
@@ -497,9 +465,8 @@ export default defineComponent({
     rollDice() {
       this.rollDiceBtnDialog = false;
       this.sessionStore.game.diceValue =
-        Math.floor(
-          Math.random() * (this.sessionStore.game.config.doubleDice ? 36 : 6)
-        ) + 1; //12;
+        Math.floor(Math.random() * (this.sessionStore.game.config.doubleDice ? 36 : 6)) +
+        1; //12;
 
       // this.sessionStore.game.diceValue = this.sessionStore.game.config
       //   .doubleDice
@@ -509,7 +476,7 @@ export default defineComponent({
     },
 
     walk() {
-      console.log('walk');
+      console.log("walk");
 
       let movement;
 
@@ -519,25 +486,25 @@ export default defineComponent({
 
       if (localPlayer) {
         const oldPosition = localPlayer.playerPosition;
-        console.log('oldPosition', oldPosition);
+        console.log("oldPosition", oldPosition);
 
         const newPosition = this.sessionStore.activePlayer.playerPosition;
 
-        console.log('newPosition', newPosition);
+        console.log("newPosition", newPosition);
 
         if (oldPosition - 24 == newPosition) {
-          movement = 'up';
+          movement = "up";
         } else if (oldPosition + 1 == newPosition) {
-          movement = 'right';
+          movement = "right";
         } else if (oldPosition + 24 == newPosition) {
-          movement = 'down';
+          movement = "down";
         } else if (oldPosition - 1 == newPosition) {
-          movement = 'left';
+          movement = "left";
         }
 
         if (movement) {
           this.padMovePlayer(movement, true);
-          console.log('walk', movement);
+          console.log("walk", movement);
         }
 
         // const localPlayerIndex = this.localPlayers.findIndex(
@@ -550,7 +517,7 @@ export default defineComponent({
     checkNpc() {
       if (
         !this.isNpc ||
-        this.$route.name !== 'game' ||
+        this.$route.name !== "game" ||
         !this.sessionStore.game.diceValue
       ) {
         this.lastPosition = 0;
@@ -583,66 +550,47 @@ export default defineComponent({
         const isChecklistDoor = this.sessionStore.activePlayer.checklist.some(
           (c) => c.name === door.place
         );
-        if (
-          !isChecklistDoor &&
-          (!destination || door.distance < destination.distance)
-        ) {
+        if (!isChecklistDoor && (!destination || door.distance < destination.distance)) {
           destination = door;
         }
       });
 
-      console.log('destination', destination.place);
+      console.log("destination", destination.place);
 
       const coordDirections = [
         {
-          movement: 'up',
+          movement: "up",
           position: upPosition,
           ...this.getCoord(upPosition),
-          distance: d(
-            this.getCoord(upPosition),
-            this.getCoord(destination.door)
-          ),
+          distance: d(this.getCoord(upPosition), this.getCoord(destination.door)),
         },
         {
-          movement: 'right',
+          movement: "right",
           position: rightPosition,
           ...this.getCoord(rightPosition),
-          distance: d(
-            this.getCoord(rightPosition),
-            this.getCoord(destination.door)
-          ),
+          distance: d(this.getCoord(rightPosition), this.getCoord(destination.door)),
         },
         {
-          movement: 'down',
+          movement: "down",
           position: downPosition,
           ...this.getCoord(downPosition),
-          distance: d(
-            this.getCoord(downPosition),
-            this.getCoord(destination.door)
-          ),
+          distance: d(this.getCoord(downPosition), this.getCoord(destination.door)),
         },
         {
-          movement: 'left',
+          movement: "left",
           position: leftPosition,
           ...this.getCoord(leftPosition),
-          distance: d(
-            this.getCoord(leftPosition),
-            this.getCoord(destination.door)
-          ),
+          distance: d(this.getCoord(leftPosition), this.getCoord(destination.door)),
         },
       ];
 
       let direction: any = null;
 
-      console.log('coordDoors', coordDoors);
-      console.log('coordDirections', coordDirections);
+      console.log("coordDoors", coordDoors);
+      console.log("coordDirections", coordDirections);
 
-      const isInsidePlace = coordDoors.find(
-        (door) => door.door === playerPosition
-      );
-      const isOnEntry = coordDoors.find(
-        (door) => door.door === this.lastPosition
-      );
+      const isInsidePlace = coordDoors.find((door) => door.door === playerPosition);
+      const isOnEntry = coordDoors.find((door) => door.door === this.lastPosition);
       if (isInsidePlace) {
         const nextStep = coordDirections.find(
           (dir) => dir.position === isInsidePlace.entry
@@ -657,10 +605,7 @@ export default defineComponent({
           const possibleDoor = this.doors.find((d) => d.door === dir.position);
           if (possibleDoor && possibleDoor.door !== destination.door) return;
 
-          if (
-            this.checkObstacle(dir.position) &&
-            dir.position !== this.lastPosition
-          ) {
+          if (this.checkObstacle(dir.position) && dir.position !== this.lastPosition) {
             if (!direction || dir.distance < direction.distance) {
               direction = dir;
             }
@@ -698,8 +643,7 @@ export default defineComponent({
       if (this.isPlayer) {
         return player.playerPosition;
       } else {
-        return this.localPlayers.find((p) => p.id === player.id)
-          ?.playerPosition;
+        return this.localPlayers.find((p) => p.id === player.id)?.playerPosition;
       }
     },
 
@@ -714,9 +658,9 @@ export default defineComponent({
         const width = this.$q.screen.width;
         const height = this.$q.screen.height;
 
-        if (index === 'x') {
+        if (index === "x") {
           window.scrollBy(rect.x - width / 2, 0);
-        } else if (index === 'y') {
+        } else if (index === "y") {
           window.scrollBy(0, rect.y - height / 2);
         } else {
           window.scrollBy(rect.x - width / 2, rect.y - height / 2);
@@ -922,5 +866,3 @@ export default defineComponent({
   cursor: pointer;
 }
 </style>
-
-

@@ -22,19 +22,13 @@
       <q-card-section class="q-dialog__message full-height full-width">
         <div class="row reverse">
           <div class="col col-12 col-sm-6 flex items-center">
-            <div
-              v-if="loaded"
-              class="talk-balloon full-width q-pa-sm q-mt-md column"
-            >
+            <div v-if="loaded" class="talk-balloon full-width q-pa-sm q-mt-md column">
               <q-spinner-dots
                 v-if="!sessionStore.game.indictment.indictment"
                 color="dark"
                 size="1.5rem"
               />
-              <div
-                v-else
-                :class="{ 'subtitle2-size': $q.screen.xs || $q.screen.sm }"
-              >
+              <div v-else :class="{ 'subtitle2-size': $q.screen.xs || $q.screen.sm }">
                 <div class="clue-text-muted q-mb-sm">Eis minha acusação:</div>
                 <div class="text-no-wrap">
                   <span>Local:</span>
@@ -45,20 +39,14 @@
                 <div class="text-no-wrap">
                   <span>Arma:</span>
                   <span v-if="!sessionStore.game.indictment.weapon">
-                    <q-spinner-dots
-                      color="dark"
-                      size="1.5rem"
-                      class="q-ma-sm"
-                    />
+                    <q-spinner-dots color="dark" size="1.5rem" class="q-ma-sm" />
                   </span>
                   <span v-else class="text-primary text-bold q-ml-sm"
                     >{{ weaponNameComputed }}
                   </span>
                   <span class="q-ml-sm">
                     <q-icon
-                      v-if="
-                        isPlayer && !sessionStore.game.indictment.indictmentMade
-                      "
+                      v-if="isPlayer && !sessionStore.game.indictment.indictmentMade"
                       name="edit"
                       color="primary"
                       class="cursor-pointer"
@@ -75,22 +63,14 @@
                 <div class="text-no-wrap">
                   <span>Assassino:</span>
                   <span v-if="!sessionStore.game.indictment.character">
-                    <q-spinner-dots
-                      color="dark"
-                      size="1.5rem"
-                      class="q-ma-sm"
-                    />
+                    <q-spinner-dots color="dark" size="1.5rem" class="q-ma-sm" />
                   </span>
-                  <span
-                    v-else
-                    class="text-primary text-bold text-capitalize q-ml-sm"
-                    >{{ sessionStore.game.indictment.character }}</span
-                  >
+                  <span v-else class="text-primary text-bold text-capitalize q-ml-sm">{{
+                    sessionStore.game.indictment.character
+                  }}</span>
                   <span class="q-ml-sm">
                     <q-icon
-                      v-if="
-                        isPlayer && !sessionStore.game.indictment.indictmentMade
-                      "
+                      v-if="isPlayer && !sessionStore.game.indictment.indictmentMade"
                       name="edit"
                       color="primary"
                       class="cursor-pointer"
@@ -104,21 +84,15 @@
                     />
                   </span>
                 </div>
-                <div
-                  class="answers-list text-size text-no-wrap full-width q-ma-md"
-                >
+                <div class="answers-list text-size text-no-wrap full-width q-ma-md">
                   <div
-                    v-for="(answer, index) in sessionStore.game.indictment
-                      .answersList"
+                    v-for="(answer, index) in sessionStore.game.indictment.answersList"
                     :key="index"
                     class="q-pa-sm text-white q-mb-sm text-center full-width flex flex-center"
                     :class="answer.answered ? 'bg-negative' : 'bg-positive'"
                     style="border-radius: 25px"
                   >
-                    <q-icon
-                      class="q-mr-sm"
-                      :name="answer.answered ? 'close' : 'check'"
-                    />
+                    <q-icon class="q-mr-sm" :name="answer.answered ? 'close' : 'check'" />
                     {{ answer.text }}
                   </div>
                 </div>
@@ -138,8 +112,8 @@
                   />
                   <div v-else-if="ownCard">
                     <div class="text-size text-negative text-center">
-                      Ninguém apresentou nenhuma carta, mas você possui, pelo
-                      menos, uma das cartas que você usou na acusação!
+                      Ninguém apresentou nenhuma carta, mas você possui, pelo menos, uma
+                      das cartas que você usou na acusação!
                     </div>
                     <q-btn
                       style="width: 100%"
@@ -160,11 +134,7 @@
                       }}</span>
                       responder</span
                     >
-                    <q-spinner-hourglass
-                      color="primary"
-                      size="1em"
-                      class="q-ma-sm"
-                    />
+                    <q-spinner-hourglass color="primary" size="1em" class="q-ma-sm" />
                   </div>
                   <div v-else class="text-center">
                     <div>
@@ -206,8 +176,7 @@
                     >
                   </div>
                   <div v-else-if="checkingCards" class="text-center">
-                    <span
-                      v-if="answerPlayer.id === sessionStore.playerSelected.id"
+                    <span v-if="answerPlayer.id === sessionStore.playerSelected.id"
                       >Checando as suas cartas...</span
                     >
                     <span v-else>
@@ -216,11 +185,7 @@
                       }}</span>
                       está checando as suas cartas...</span
                     >
-                    <q-spinner-hourglass
-                      color="primary"
-                      size="1em"
-                      class="q-ma-sm"
-                    />
+                    <q-spinner-hourglass color="primary" size="1em" class="q-ma-sm" />
                   </div>
                   <div
                     v-else-if="!sessionStore.game.indictment.answerCardName"
@@ -233,11 +198,7 @@
                       }}</span>
                       responder</span
                     >
-                    <q-spinner-hourglass
-                      color="primary"
-                      size="1em"
-                      class="q-ma-sm"
-                    />
+                    <q-spinner-hourglass color="primary" size="1em" class="q-ma-sm" />
                   </div>
                   <div v-else class="text-center">
                     <span
@@ -246,11 +207,7 @@
                         sessionStore.activePlayer.name
                       }}</span></span
                     >
-                    <q-spinner-hourglass
-                      color="primary"
-                      size="1em"
-                      class="q-ma-sm"
-                    />
+                    <q-spinner-hourglass color="primary" size="1em" class="q-ma-sm" />
                   </div>
                 </template>
               </div>
@@ -284,44 +241,34 @@
           </div>
         </div>
         <div class="characther-image q-pa-none" :style="loaded && 'left: 20%'">
-          <img
-            :src="`img/characters/${sessionStore.activePlayer.name}.png`"
-            alt=""
-          />
+          <img :src="`img/characters/${sessionStore.activePlayer.name}.png`" alt="" />
         </div>
       </q-card-section>
     </q-card>
-    <Component
-      :is="IndictmentDialog"
-      :indictmentCategory="indictmentCategory"
-    />
-    <Component
-      :is="CardsToShowDialog"
-      :cardsToShow="cardsToShow"
-      :showCard="showCard"
-    />
+    <Component :is="IndictmentDialog" :indictmentCategory="indictmentCategory" />
+    <Component :is="CardsToShowDialog" :cardsToShow="cardsToShow" :showCard="showCard" />
   </q-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
-import { useLayoutStore } from 'stores/layout';
-import { useSessionStore } from 'stores/session';
-import { useFirebaseStore } from 'stores/firebase';
-import { ICard, IIndictment } from 'src/models';
+import { defineComponent, defineAsyncComponent } from "vue";
+import { useLayoutStore } from "stores/layout";
+import { useSessionStore } from "stores/session";
+import { useFirebaseStore } from "stores/firebase";
+import { ICard, IIndictment } from "src/models";
 
 export default defineComponent({
-  name: 'PlaceDialogComponent',
+  name: "PlaceDialogComponent",
 
   setup() {
     const layoutStore = useLayoutStore();
     const sessionStore = useSessionStore();
     const firebaseStore = useFirebaseStore();
     const IndictmentDialog = defineAsyncComponent(
-      () => import('components/IndictmentDialog.vue')
+      () => import("components/IndictmentDialog.vue")
     );
     const CardsToShowDialog = defineAsyncComponent(
-      () => import('components/CardsToShowDialog.vue')
+      () => import("components/CardsToShowDialog.vue")
     );
 
     return {
@@ -341,7 +288,7 @@ export default defineComponent({
   data() {
     return {
       loaded: false,
-      indictmentCategory: 'weapon',
+      indictmentCategory: "weapon",
       checkingCards: false,
       ownCard: false,
       cardsToShow: [] as ICard[],
@@ -349,7 +296,7 @@ export default defineComponent({
   },
 
   watch: {
-    'layoutStore.placeDialog': function (novo) {
+    "layoutStore.placeDialog": function (novo) {
       setTimeout(() => {
         this.loaded = novo;
 
@@ -361,10 +308,9 @@ export default defineComponent({
       }, 1000);
     },
 
-    'sessionStore.game.indictment.answerPlayerId': function (novo) {
+    "sessionStore.game.indictment.answerPlayerId": function (novo) {
       if (
-        (this.answerPlayer?.isNpc ||
-          novo === this.sessionStore.playerSelected.id) &&
+        (this.answerPlayer?.isNpc || novo === this.sessionStore.playerSelected.id) &&
         !this.sessionStore.game.indictment.answerCardName
       ) {
         this.checkCards();
@@ -375,45 +321,45 @@ export default defineComponent({
   computed: {
     placeNameComputed() {
       switch (this.sessionStore.game.indictment.place) {
-        case 'biblioteca':
-          return 'Biblioteca';
-        case 'cozinha':
-          return 'Cozinha';
-        case 'entrada':
-          return 'Entrada';
-        case 'escritorio':
-          return 'Escritório';
-        case 'jardiminverno':
-          return 'Jardim de Inverno';
-        case 'salaestar':
-          return 'Sala de Estar';
-        case 'salajantar':
-          return 'Sala de Jantar';
-        case 'salamusica':
-          return 'Sala de Música';
-        case 'salaojogos':
-          return 'Salão de Jogos';
+        case "biblioteca":
+          return "Biblioteca";
+        case "cozinha":
+          return "Cozinha";
+        case "entrada":
+          return "Entrada";
+        case "escritorio":
+          return "Escritório";
+        case "jardiminverno":
+          return "Jardim de Inverno";
+        case "salaestar":
+          return "Sala de Estar";
+        case "salajantar":
+          return "Sala de Jantar";
+        case "salamusica":
+          return "Sala de Música";
+        case "salaojogos":
+          return "Salão de Jogos";
         default:
-          return '';
+          return "";
       }
     },
 
     weaponNameComputed() {
       switch (this.sessionStore.game.indictment.weapon) {
-        case 'castical':
-          return 'Castiçal';
-        case 'corda':
-          return 'Corda';
-        case 'cano':
-          return 'Cano';
-        case 'revolver':
-          return 'Revólver';
-        case 'chaveinglesa':
-          return 'Chave Inglesa';
-        case 'faca':
-          return 'Faca';
+        case "castical":
+          return "Castiçal";
+        case "corda":
+          return "Corda";
+        case "cano":
+          return "Cano";
+        case "revolver":
+          return "Revólver";
+        case "chaveinglesa":
+          return "Chave Inglesa";
+        case "faca":
+          return "Faca";
         default:
-          return '';
+          return "";
       }
     },
 
@@ -443,18 +389,14 @@ export default defineComponent({
 
       this.sessionStore.cards.forEach((card) => {
         if (
-          card.category === 'character' &&
-          this.sessionStore.activePlayer.checklist.every(
-            (c) => c.id !== card.id
-          )
+          card.category === "character" &&
+          this.sessionStore.activePlayer.checklist.every((c) => c.id !== card.id)
         ) {
           characters.push(card);
         }
         if (
-          card.category === 'weapon' &&
-          this.sessionStore.activePlayer.checklist.every(
-            (c) => c.id !== card.id
-          )
+          card.category === "weapon" &&
+          this.sessionStore.activePlayer.checklist.every((c) => c.id !== card.id)
         ) {
           weapons.push(card);
         }
@@ -462,13 +404,10 @@ export default defineComponent({
 
       setTimeout(() => {
         const weaponRandomIndex = Math.floor(Math.random() * weapons.length);
-        this.sessionStore.game.indictment.weapon =
-          weapons[weaponRandomIndex]?.name;
+        this.sessionStore.game.indictment.weapon = weapons[weaponRandomIndex]?.name;
 
         setTimeout(() => {
-          const characterRandomIndex = Math.floor(
-            Math.random() * characters.length
-          );
+          const characterRandomIndex = Math.floor(Math.random() * characters.length);
           this.sessionStore.game.indictment.character =
             characters[characterRandomIndex]?.name;
 
@@ -487,10 +426,10 @@ export default defineComponent({
     initIndictment() {
       this.sessionStore.game.indictment.indictment = true;
       this.sessionStore.game.indictment.indictmentMade = false;
-      this.sessionStore.game.indictment.character = '';
-      this.sessionStore.game.indictment.weapon = '';
-      this.sessionStore.game.indictment.answerPlayerId = '';
-      this.sessionStore.game.indictment.answerCardName = '';
+      this.sessionStore.game.indictment.character = "";
+      this.sessionStore.game.indictment.weapon = "";
+      this.sessionStore.game.indictment.answerPlayerId = "";
+      this.sessionStore.game.indictment.answerCardName = "";
       this.sessionStore.game.indictment.answersList = [];
       this.sessionStore.game.indictment.cardShown = {} as ICard;
       this.ownCard = false;
@@ -502,6 +441,16 @@ export default defineComponent({
     },
 
     finishIndictment(playerId: string) {
+      const indictmentCharacterIndex = this.sessionStore.game.players.findIndex(
+        (p) => p.name === this.sessionStore.game.indictment.character
+      );
+
+      if (indictmentCharacterIndex >= 0) {
+        this.sessionStore.game.players[
+          indictmentCharacterIndex
+        ].playerPosition = this.sessionStore.activePlayer.playerPosition;
+      }
+
       this.sessionStore.game.indictment.indictmentMade = true;
       this.sessionStore.setAnswerPlayerId(playerId);
     },
@@ -562,9 +511,7 @@ export default defineComponent({
             if (player.id === this.sessionStore.activePlayer.id) {
               this.ownCard = true;
             } else {
-              const cardRandomIndex = Math.floor(
-                Math.random() * this.cardsToShow.length
-              );
+              const cardRandomIndex = Math.floor(Math.random() * this.cardsToShow.length);
               this.showCard(this.cardsToShow[cardRandomIndex]);
             }
           } else {
